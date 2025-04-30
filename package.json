@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "index": "node --watch --watch-preserve-output index.js",
+    "seed": "node scripts/seed.js"
   },
   "repository": {
     "type": "git",
@@ -16,8 +18,8 @@
     "url": "https://github.com/Viktorija-Sta/Atsiskaitymas-BE/issues"
   },
   "homepage": "https://github.com/Viktorija-Sta/Atsiskaitymas-BE#readme",
-  "description": "",
   "dependencies": {
+    "bcryptjs": "^3.0.2",
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
@@ -26,5 +28,6 @@
     "mongodb": "^6.16.0",
     "mongoose": "^8.14.1",
     "uuid": "^11.1.0"
-  }
+  },
+  "description": ""
 }

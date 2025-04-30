@@ -10,7 +10,7 @@ router.get('/search', searchHotels)
 router.get('/', getAllHotels)
 router.get('/category/:categoryName', getHotelsByCategory)
 router.get('/:id', getHotelById)
-router.post('/', createHotel)
+router.post('/', authMiddleware, rolesMiddlewares(ROLES.ADMIN), createHotel)
 router.put('/:id', authMiddleware, rolesMiddlewares(ROLES.ADMIN), updateHotel)
 router.delete('/:id', authMiddleware, rolesMiddlewares(ROLES.ADMIN), deleteHotel)
 

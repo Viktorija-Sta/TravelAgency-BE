@@ -1,3 +1,4 @@
+const { ALLOWED_ORDER_STATUSES } = require("../constants/orderStatus")
 const Order = require("../models/orderModel")
 
 const getStats = async (req, res) => {
@@ -29,14 +30,14 @@ const getStats = async (req, res) => {
 
 const getAllOrders = async (req, res) => {
   try {
-    if (req.user.role !== "ADMIN") {
+    if (req.user.role !== "admin") {
       return res.status(403).send({ message: "Only ADMIN can see all orders" })
     }
 
     const orders = await Order.find()
     .populate('user', 'email username')
-    .populate('items.destination', 'name price imageUrl')
-    .populate('items.hotel', 'name price imageUrl') 
+    .populate('item.destination', 'name price imageUrl')
+    .populate('item.hotel', 'name price imageUrl') 
 
     res.send(orders)
   } catch (error) {
@@ -53,7 +54,7 @@ const updateOrder = async (req, res) => {
         return res.status(400).send({ error: "Invalid order status" });
       } 
 
-    if (req.user.role !== "ADMIN") {
+    if (req.user.role !== "admin") {
       return res.status(403).send({ message: "Only ADMIN can update orders" })
     }
 

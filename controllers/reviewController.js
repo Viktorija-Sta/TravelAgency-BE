@@ -5,18 +5,18 @@ const Agency = require('../models/agencyModel')
 
 const createReview = async (req, res) => {
     try {
-        const { rating, comment, userId } = req.body
-        const { destinationId, hotelId, agencyId } = req.params
+        const { rating, comment, user } = req.body
+        const { destination, hotel, agency } = req.params
 
         if (!rating || rating < 1 || rating > 5) {
             return res.status(400).json({ message: 'Rating must be between 1 and 5' })
         }
 
         const existingReview = await Review.findOne({
-            userId: req.user._id,
-            destinationId,
-            hotelId,
-            agencyId,
+            user: req.user._id,
+            destination,
+            hotel,
+            agency,
             
         })
 
@@ -28,29 +28,29 @@ const createReview = async (req, res) => {
         }
 
         const newReview = new Review({
-            userId: req.user._id,
-            destinationId,
-            hotelId,
-            agencyId,
+            user: req.user._id,
+            destination,
+            hotel,
+            agency,
             rating,
             comment,
         })
         await newReview.save()
 
         const allReviews = await Review.find({
-            destinationId,
-            hotelId,
-            agencyId,
+            destination,
+            hotel,
+            agency,
         })
 
         const averageRating = allReviews.reduce((acc, review) => acc + review.rating, 0) / allReviews.length
 
-        if (destinationId) {
-            await Destination.findByIdAndUpdate(destinationId, { rating: averageRating })
-        } else if (hotelId) {
-            await Hotel.findByIdAndUpdate(hotelId, { rating: averageRating })
-        } else if (agencyId) {
-            await Agency.findByIdAndUpdate(agencyId, { rating: averageRating })
+        if (destination) {
+            await Destination.findByIdAndUpdate(destination, { rating: averageRating })
+        } else if (hotel) {
+            await Hotel.findByIdAndUpdate(hotel, { rating: averageRating })
+        } else if (agency) {
+            await Agency.findByIdAndUpdate(agency, { rating: averageRating })
         }
 
         res.status(201).json({ message: 'Review created successfully', review: newReview })
@@ -62,15 +62,15 @@ const createReview = async (req, res) => {
 
 const getReviews = async (req, res) => {
     try {
-        const { destinationId, hotelId, agencyId } = req.params
+        const { destination, hotel, agency } = req.params
 
         let reviews
-        if (destinationId) {
-            reviews = await Review.find({ destinationId }).populate('userId', 'username')
-        } else if (hotelId) {
-            reviews = await Review.find({ hotelId }).populate('userId', 'username')
-        } else if (agencyId) {
-            reviews = await Review.find({ agencyId }).populate('userId', 'username')
+        if (destination) {
+            reviews = await Review.find({ destination }).populate('userId', 'username')
+        } else if (hotel) {
+            reviews = await Review.find({ hotel }).populate('userId', 'username')
+        } else if (agency) {
+            reviews = await Review.find({ agency }).populate('userId', 'username')
         } else {
             return res.status(400).json({ message: 'Please provide a valid destination, hotel, or agency ID' })
         }
@@ -85,7 +85,7 @@ const getReviews = async (req, res) => {
 const deleteReview = async (req, res) => {
     try {
         const { reviewId } = req.params;
-        const userId = req.user.id;
+        const user = req.user.id;
         const userRole = req.user.role;
 
         const review = await Review.findById(reviewId);
@@ -93,7 +93,7 @@ const deleteReview = async (req, res) => {
             return res.status(404).json({ message: 'Review not found' });
         }
 
-        if (review.user.toString() !== userId && userRole !== 'admin') {
+        if (review.user.toString() !== user && userRole !== 'admin') {
             return res.status(403).json({ message: 'You are not authorized to delete this review' });
         }
 
@@ -110,7 +110,7 @@ const updateReview = async (req, res) => {
     try {
         const { reviewId } = req.params;
         const { rating, comment } = req.body;
-        const userId = req.user.id;
+        const user = req.user._id;
         const userRole = req.user.role;
 
         const review = await Review.findById(reviewId);
@@ -118,7 +118,7 @@ const updateReview = async (req, res) => {
             return res.status(404).json({ message: 'Review not found' });
         }
 
-        if (review.user.toString() !== userId && userRole !== 'admin') {
+        if (review.user.toString() !== user && userRole !== 'admin') {
             return res.status(403).json({ message: 'You are not authorized to update this review' });
         }
 

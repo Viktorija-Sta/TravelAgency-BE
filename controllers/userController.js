@@ -167,7 +167,7 @@ const getMyOrders = async (req, res) => {
       const userId = req.user._id;
   
       const orders = await Order.find({ user: userId })
-        .populate("items.destinationId", "title price image");
+        .populate("items.destination", "title price image");
   
       res.status(200).json(orders);
     } catch (error) {

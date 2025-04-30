@@ -2,16 +2,12 @@ const mongoose = require('mongoose');
 
 const reviewSchema = new mongoose.Schema(
     {
-        userId: {
+        user: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
             required: true,
         },
-        productId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Product',
-            required: true,
-        },
+       
         rating: {
             type: Number,
             required: true,
@@ -26,14 +22,14 @@ const reviewSchema = new mongoose.Schema(
             type: Date,
             default: Date.now,
         },
-        destinationId: { 
+        destination: { 
             type: mongoose.Schema.Types.ObjectId, 
             ref: 'Destination' 
         },
-        hotelId: { 
+        hotel: { 
             type: mongoose.Schema.Types.ObjectId, 
             ref: 'Hotel' },
-        agencyId: { 
+        agency: { 
             type: mongoose.Schema.Types.ObjectId, 
             ref: 'Agency' }
     }

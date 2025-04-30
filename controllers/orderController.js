@@ -33,7 +33,7 @@ const createOrder = async (req, res) => {
 const getOrderById = async (req, res) => {
     try {
         const { id } = req.params;
-        const userId = req.user._id;
+        const user = req.user._id;
         const userRole = req.user.role;
 
         const order = await Order.findById(id)
@@ -45,7 +45,7 @@ const getOrderById = async (req, res) => {
             return res.status(404).send({ message: "Order not found" });
         }
 
-        if (order.user.toString() !== userId.toString() && userRole !== 'admin') {
+        if (order.user.toString() !== user.toString() && userRole !== 'admin') {
             return res.status(403).send({ message: "Access denied" });
         }
 

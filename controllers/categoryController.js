@@ -1,4 +1,7 @@
+const Agency = require('../models/agencyModel')
 const Category = require('../models/categoryModel')
+const Destination = require('../models/destinationModel')
+const Hotel = require('../models/hotelModel')
 
 const createCategory = async (req, res) => {
     try {

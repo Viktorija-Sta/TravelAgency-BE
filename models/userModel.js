@@ -49,19 +49,15 @@ const userSchema = new mongoose.Schema(
         address: {
             street: {
                 type: String,
-                required: true,
             },
             city: {
                 type: String,
-                required: true,
             },
             zipCode: {
                 type: String,
-                required: true,
             },
             country: {
                 type: String,
-                required: true,
             },
         },
         phoneNumber: {
@@ -71,7 +67,7 @@ const userSchema = new mongoose.Schema(
             trim: true,
             validate: {
                 validator: function (value) {
-                    return /^[0-9]{10}$/.test(value);
+                    return /^\+?\d{9,15}$/.test(value);
                   },
                   message: (props) => `${props.value} is not a valid phone number`,
             },

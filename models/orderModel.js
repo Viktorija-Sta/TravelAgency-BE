@@ -2,17 +2,21 @@ const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema(
     {
-        userId: {
+        user: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
             required: true,
         },
-        products: [
+        items: [
             {
-                productId: {
+                destination: {
                     type: mongoose.Schema.Types.ObjectId,
-                    ref: 'Product',
+                    ref: 'Destination',
                     required: true,
+                },
+                hotel: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'Hotel'
                 },
                 quantity: {
                     type: Number,
@@ -35,18 +39,8 @@ const orderSchema = new mongoose.Schema(
             default: 'Pending',
         },
         shippingAddress: {
-            street: {
-                type: String,
-                required: true,
-            },
-            city: {
-                type: String,
-                required: true,
-            },
-            zipCode: {
-                type: String,
-                required: true,
-            },
+            type: String,
+            required: true,
         },
     }
 )

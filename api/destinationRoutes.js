@@ -11,7 +11,7 @@ router.get('/search', searchDestinations)
 router.get('/', getAllDestinations)
 router.get('/category/:categoryName', getDestinationsByCategory)
 router.get('/:id', getDestinationById)
-router.post('/', createDestination)
+router.post('/', authMiddleware, rolesMiddlewares(ROLES.ADMIN) , createDestination)
 router.put('/:id', authMiddleware, rolesMiddlewares(ROLES.ADMIN), updateDestination)
 router.delete('/:id', authMiddleware, rolesMiddlewares(ROLES.ADMIN), deleteDestination)
 

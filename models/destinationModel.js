@@ -41,17 +41,13 @@ const destinationSchema = new mongoose.Schema(
             min: 0,
             max: 5,
         },
-        categoryId : {
+        category : {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Category',
         },
-        agencyId : {
+        agency : {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Agency',
-        },
-        hotelId : {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Hotel',
         },
     },
     {

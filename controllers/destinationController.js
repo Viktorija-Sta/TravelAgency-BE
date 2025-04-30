@@ -92,7 +92,11 @@ const searchDestinations= async (req, res) => {
       const regex = new RegExp(q, "i")
   
       const destinations = await Destination.find({
-        $or: [{ name: regex }, { description: regex }],
+        $or: [
+            { name: regex }, 
+            { description: regex }, 
+            { location: regex }
+        ],
       })
         .limit(30)
         .populate("category")
