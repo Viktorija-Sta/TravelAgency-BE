@@ -36,7 +36,20 @@ const hotelSchema = new mongoose.Schema(
             type: Number,
             default: 0,
         },
-    }
+        destinationId: { 
+            type: mongoose.Schema.Types.ObjectId, 
+            ref: 'Destination' 
+        },
+        categoryId: { 
+            type: mongoose.Schema.Types.ObjectId, 
+            ref: 'Category' 
+        },
+        agencyId: { 
+            type: mongoose.Schema.Types.ObjectId, 
+            ref: 'Agency' 
+        }
+    },
+    {timestamp: true},
 )
 
 const Hotel = mongoose.model('Hotel', hotelSchema)

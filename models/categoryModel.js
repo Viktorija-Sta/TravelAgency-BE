@@ -16,6 +16,19 @@ const categorySchema = new mongoose.Schema(
             type: Number,
             default: 0,
         },
+        destinationId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Destination',
+        },
+        agencyId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Agency',
+        },
+        hotelId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Hotel',
+        },
+        
     }
 )
 

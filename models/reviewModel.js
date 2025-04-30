@@ -26,6 +26,16 @@ const reviewSchema = new mongoose.Schema(
             type: Date,
             default: Date.now,
         },
+        destinationId: { 
+            type: mongoose.Schema.Types.ObjectId, 
+            ref: 'Destination' 
+        },
+        hotelId: { 
+            type: mongoose.Schema.Types.ObjectId, 
+            ref: 'Hotel' },
+        agencyId: { 
+            type: mongoose.Schema.Types.ObjectId, 
+            ref: 'Agency' }
     }
 )
 

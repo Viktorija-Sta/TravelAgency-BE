@@ -41,6 +41,21 @@ const destinationSchema = new mongoose.Schema(
             min: 0,
             max: 5,
         },
+        categoryId : {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Category',
+        },
+        agencyId : {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Agency',
+        },
+        hotelId : {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Hotel',
+        },
+    },
+    {
+        timestamps: true,
     }
 )
 
