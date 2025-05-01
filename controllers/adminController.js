@@ -36,8 +36,8 @@ const getAllOrders = async (req, res) => {
 
     const orders = await Order.find()
     .populate('user', 'email username')
-    .populate('item.destination', 'name price imageUrl')
-    .populate('item.hotel', 'name price imageUrl') 
+    .populate('destination', 'name price imageUrl')
+    .populate('hotel', 'name price imageUrl') 
 
     res.send(orders)
   } catch (error) {

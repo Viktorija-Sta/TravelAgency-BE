@@ -38,8 +38,8 @@ const getOrderById = async (req, res) => {
 
         const order = await Order.findById(id)
             .populate('user', 'username email')
-            .populate('items.destination', 'name location')
-            .populate('items.hotel', 'name location');
+            .populate('destination', 'name location')
+            .populate('hotel', 'name location');
 
         if (!order) {
             return res.status(404).send({ message: "Order not found" });
@@ -64,8 +64,8 @@ const getUserOrders = async (req, res) => {
         }
         const orders = await Order.find({ user })
             .populate('user', 'username email')
-            .populate('items.destination', 'name location')
-            .populate('items.hotel', 'name location')
+            .populate('destination', 'name location')
+            .populate('hotel', 'name location')
 
         
         if (!orders) {
@@ -86,8 +86,8 @@ const getAllOrders = async (req, res) => {
 
         const orders = await Order.find()
             .populate('user', 'username email')
-            .populate('items.destination', 'name location')
-            .populate('items.hotel', 'name location')
+            .populate('destination', 'name location')
+            .populate('hotel', 'name location')
 
         if (!orders) {
             return res.status(404).send({ message: "No orders found" })
@@ -152,8 +152,8 @@ const getMyOrders = async (req, res) => {
 
         const orders = await Order.find({ user: userId })
             .populate('user', 'username email')
-            .populate('items.destination', 'name location')
-            .populate('items.hotel', 'name location')
+            .populate('destination', 'name location')
+            .populate('hotel', 'name location')
 
         if (!orders) {
             return res.status(404).send({ message: "No orders found" })
@@ -171,8 +171,8 @@ const getUserOrderById = async (req, res) => {
 
         const order = await Order.findOne({ _id: id, user: userId })
             .populate('user', 'username email')
-            .populate('items.destination', 'name location')
-            .populate('items.hotel', 'name location')
+            .populate('destination', 'name location')
+            .populate('hotel', 'name location')
 
         if (!order) {
             return res.status(404).send({ message: "Order not found" })

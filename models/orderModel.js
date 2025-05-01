@@ -7,24 +7,22 @@ const orderSchema = new mongoose.Schema(
             ref: 'User',
             required: true,
         },
-        items: [
-            {
-                destination: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: 'Destination',
-                    required: true,
-                },
-                hotel: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: 'Hotel'
-                },
-                quantity: {
-                    type: Number,
-                    required: true,
-                    min: 1,
-                },
-            },
-        ],
+        
+        destination: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Destination',
+            required: true,
+        },
+        hotel: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Hotel'
+        },
+        quantity: {
+            type: Number,
+            required: true,
+            min: 1,
+        },
+          
         totalAmount: {
             type: Number,
             required: true,
