@@ -84,55 +84,55 @@ const getReviews = async (req, res) => {
 
 const deleteReview = async (req, res) => {
     try {
-        const { reviewId } = req.params;
-        const user = req.user.id;
-        const userRole = req.user.role;
+        const { reviewId } = req.params
+        const user = req.user._id
+        const userRole = req.user.role
 
-        const review = await Review.findById(reviewId);
+        const review = await Review.findById(reviewId)
         if (!review) {
-            return res.status(404).json({ message: 'Review not found' });
+            return res.status(404).json({ message: 'Review not found' })
         }
 
         if (review.user.toString() !== user && userRole !== 'admin') {
-            return res.status(403).json({ message: 'You are not authorized to delete this review' });
+            return res.status(403).json({ message: 'You are not authorized to delete this review' })
         }
 
-        await review.deleteOne();
+        await review.deleteOne()
 
-        res.status(200).json({ message: 'Review deleted successfully' });
+        res.status(200).json({ message: 'Review deleted successfully' })
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Something went wrong', error });
+        console.error(error)
+        res.status(500).json({ message: 'Something went wrong', error })
     }
-};
+}
 
 const updateReview = async (req, res) => {
     try {
-        const { reviewId } = req.params;
-        const { rating, comment } = req.body;
-        const user = req.user._id;
-        const userRole = req.user.role;
+        const { reviewId } = req.params
+        const { rating, comment } = req.body
+        const user = req.user._id
+        const userRole = req.user.role
 
-        const review = await Review.findById(reviewId);
+        const review = await Review.findById(reviewId)
         if (!review) {
-            return res.status(404).json({ message: 'Review not found' });
+            return res.status(404).json({ message: 'Review not found' })
         }
 
         if (review.user.toString() !== user && userRole !== 'admin') {
-            return res.status(403).json({ message: 'You are not authorized to update this review' });
+            return res.status(403).json({ message: 'You are not authorized to update this review' })
         }
 
-        review.rating = rating ?? review.rating;
-        review.comment = comment ?? review.comment;
+        review.rating = rating ?? review.rating
+        review.comment = comment ?? review.comment
 
-        const updatedReview = await review.save();
+        const updatedReview = await review.save()
 
-        res.status(200).json({ message: 'Review updated successfully', review: updatedReview });
+        res.status(200).json({ message: 'Review updated successfully', review: updatedReview })
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Something went wrong', error });
+        console.error(error)
+        res.status(500).json({ message: 'Something went wrong', error })
     }
-};
+}
 
 
 module.exports = {

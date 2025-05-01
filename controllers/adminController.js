@@ -60,7 +60,7 @@ const updateOrder = async (req, res) => {
 
 
     const updatedOrder = await Order.findByIdAndUpdate(
-        { _id: id },
+        id,
         { $set: req.body },
         { new: true }
     )

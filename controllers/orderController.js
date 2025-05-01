@@ -32,26 +32,26 @@ const createOrder = async (req, res) => {
 
 const getOrderById = async (req, res) => {
     try {
-        const { id } = req.params;
-        const user = req.user._id;
-        const userRole = req.user.role;
+        const { id } = req.params
+        const user = req.user._id
+        const userRole = req.user.role
 
         const order = await Order.findById(id)
             .populate('user', 'username email')
             .populate('destination', 'name location')
-            .populate('hotel', 'name location');
+            .populate('hotel', 'name location')
 
         if (!order) {
-            return res.status(404).send({ message: "Order not found" });
+            return res.status(404).send({ message: "Order not found" })
         }
 
         if (order.user.toString() !== user.toString() && userRole !== 'admin') {
-            return res.status(403).send({ message: "Access denied" });
+            return res.status(403).send({ message: "Access denied" })
         }
 
-        res.send(order);
+        res.send(order)
     } catch (err) {
-        res.status(500).send({ message: "Something went wrong", err });
+        res.status(500).send({ message: "Something went wrong", err })
     }
 }
 

@@ -119,7 +119,7 @@ const getUser = async (req, res) => {
 const deleteUser = async (req, res) => {
     try {
         const { id } = req.params 
-        const currentUserId = req.user.id
+        const currentUserId = req.user._id
 
         if(id === currentUserId) {
             return res.status(400).send({ message: "You cannot delete yourself" })
