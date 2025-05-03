@@ -1,5 +1,6 @@
 const Category = require('../models/categoryModel');
 const Hotel = require('../models/hotelModel');
+const Review = require('../models/reviewModel');
 
 // CREATE
 const createHotel = async (req, res) => {
@@ -20,7 +21,15 @@ const getAllHotels = async (req, res) => {
   
       if (req.query.agency) {
         filter.agency = req.query.agency
-      }
+    }
+
+    if (req.query.category) {
+        filter.category = req.query.category  
+    }
+
+    if (req.query.destination) {
+      filter.destination = req.query.destination 
+    }
   
       const hotels = await Hotel.find(filter)
         .populate('destination', 'name location')
@@ -36,7 +45,8 @@ const getAllHotels = async (req, res) => {
 // GET SINGLE HOTEL
 const getHotelById = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { id } = req.params
+
         const hotel = await Hotel.findById(id)
             .populate('destination', 'name location')
             .populate('category', 'name')
@@ -44,7 +54,9 @@ const getHotelById = async (req, res) => {
         if (!hotel) {
             return res.status(404).json({ message: 'Hotel not found' })
         }
-        res.json(hotel)
+
+        const reviews = await Review.find({ hotel: id }).populate('user', 'username')
+        res.json(hotel, reviews)
     } catch (error) {
         res.status(500).json({ message: 'Failed to fetch hotel', error })
     }

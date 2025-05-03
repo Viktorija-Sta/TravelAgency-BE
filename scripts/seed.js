@@ -37,15 +37,15 @@ const seedData = async () => {
     const hashedPassword = await bcrypt.hash('password123', 10)
     const users = await User.insertMany([
       { username: 'admin', email: 'admin@admin.com', password: hashedPassword, role: 'admin', phoneNumber: '+37060000001',
-        address: 'London' },
+        address: 'London', profilePicture: 'https://i.redd.it/instagram-default-user-profile-pic-flip-flops-v0-clnilflfeg4d1.jpg?width=230&format=pjpg&auto=webp&s=e5c920f218f52a77c28abc5175c8db29dfa0d219' },
       { username: 'john', email: 'john@example.com', password: hashedPassword, role: 'user', phoneNumber: '+37060000003',
-        address: 'Vilnius' },
+        address: 'Vilnius', profilePicture: 'https://i.redd.it/instagram-default-user-profile-pic-flip-flops-v0-clnilflfeg4d1.jpg?width=230&format=pjpg&auto=webp&s=e5c920f218f52a77c28abc5175c8db29dfa0d219' },
       { username: 'sara', email: 'sara@example.com', password: hashedPassword, role: 'user', phoneNumber: '+37060000002',
-        address: 'Paris' },
+        address: 'Paris', profilePicture: 'https://i.redd.it/instagram-default-user-profile-pic-flip-flops-v0-clnilflfeg4d1.jpg?width=230&format=pjpg&auto=webp&s=e5c920f218f52a77c28abc5175c8db29dfa0d219' },
       { username: 'mike', email: 'mike@gmail.com', password: hashedPassword, role: 'user', phoneNumber: '+37060000004',
-        address: 'Kaunas' },
+        address: 'Kaunas', profilePicture: 'https://i.redd.it/instagram-default-user-profile-pic-flip-flops-v0-clnilflfeg4d1.jpg?width=230&format=pjpg&auto=webp&s=e5c920f218f52a77c28abc5175c8db29dfa0d219' },
       { username: 'anna', email: 'anna@ana.com', password: hashedPassword, role: 'user', phoneNumber: '+37060000005',
-        address: 'Berlin' }
+        address: 'Berlin', profilePicture: 'https://i.redd.it/instagram-default-user-profile-pic-flip-flops-v0-clnilflfeg4d1.jpg?width=230&format=pjpg&auto=webp&s=e5c920f218f52a77c28abc5175c8db29dfa0d219' }
     ])
 
     console.log('📦 Kuriamos kategorijos...')
@@ -66,27 +66,27 @@ const seedData = async () => {
         fullDescription: '„TravelPro“ – tai pirmaujanti kelionių agentūra, kuri specializuojasi individualiai pritaikytose kelionėse. Mūsų ekspertų komanda pasirūpins viskuo – nuo skrydžių ir viešbučių iki individualių maršrutų. Keliaukite be rūpesčių ir kurkite prisiminimus visam gyvenimui.',
         location: 'Vilnius',
         contactInfo: { email: 'contact@travelpro.lt', phone: '+37060012345' },
-        website: 'https://www.travelpro.lt',
+        website: 'https://www.travelopro.com/',
         establishedYear: 2005,
         logo: 'https://img.freepik.com/premium-vector/free-vector-black-white-vintage-illustrative-travel-agent-logo_883906-2467.jpg'
       },
       {
-        name: 'HolidayWay',
+        name: 'Makalius',
         description: 'Biudžetinės kelionės',
-        fullDescription: '„HolidayWay“ – tai Jūsų pasirinkimas, jei ieškote prieinamų, bet nepamirštamų kelionių. Mes siūlome biudžetui draugiškus pasiūlymus savaitgalio išvykoms, pažintinėms kelionėms ir poilsiui, o mūsų konsultantai padės rasti geriausią variantą.',
+        fullDescription: '„Makalius“ – tai Jūsų pasirinkimas, jei ieškote prieinamų, bet nepamirštamų kelionių. Mes siūlome biudžetui draugiškus pasiūlymus savaitgalio išvykoms, pažintinėms kelionėms ir poilsiui, o mūsų konsultantai padės rasti geriausią variantą.',
         location: 'Kaunas',
-        contactInfo: { email: 'info@holidayway.lt', phone: '+37061198765' },
-        website: 'https://www.holidayway.lt',
+        contactInfo: { email: 'info@nakalius.lt', phone: '+37061198765' },
+        website: 'https://www.makalius.lt/',
         establishedYear: 2010,
         logo: 'https://img.freepik.com/premium-vector/free-vector-black-white-vintage-illustrative-travel-agent-logo_883906-2467.jpg'
       },
       {
-        name: 'AdventureSeekers',
+        name: 'TezTour',
         description: 'Ekstremalūs nuotykiai',
-        fullDescription: '„AdventureSeekers“ – tai agentūra, orientuota į nuotykių ištroškusius keliautojus. Siūlome parašiutų šuolius, šuolius su virve, kalnų žygius ir kitas aktyvias veiklas visame pasaulyje. Su mumis Jūsų adrenalino lygis tikrai pakils!',
+        fullDescription: '„TezTour“ – tai agentūra, orientuota į nuotykių ištroškusius keliautojus. Siūlome parašiutų šuolius, šuolius su virve, kalnų žygius ir kitas aktyvias veiklas visame pasaulyje. Su mumis Jūsų adrenalino lygis tikrai pakils!',
         location: 'Klaipėda',
-        contactInfo: { email: 'adventure@adventure.com', phone: '+37061234567' },
-        website: 'https://www.adventureseekers.lt',
+        contactInfo: { email: 'adventure@teztour.com', phone: '+37061234567' },
+        website: 'https://www.teztour.lt/',
         establishedYear: 2012,
         logo: 'https://img.freepik.com/premium-vector/free-vector-black-white-vintage-illustrative-travel-agent-logo_883906-2467.jpg'
       },
@@ -101,12 +101,12 @@ const seedData = async () => {
         logo: 'https://img.freepik.com/premium-vector/free-vector-black-white-vintage-illustrative-travel-agent-logo_883906-2467.jpg'
       },
       {
-        name: 'GourmetTravels',
+        name: 'InterluxTravel',
         description: 'Kulinarinės kelionės',
-        fullDescription: '„GourmetTravels“ kviečia patirti pasaulį per skonį. Ragausite vietinius patiekalus, lankysite žymiausius restoranus, dalyvausite kulinariniuose turuose ir netgi maisto gaminimo pamokose. Tobulas pasirinkimas tikriems gurmanams.',
+        fullDescription: '„InterluxTravel“ kviečia patirti pasaulį per skonį. Ragausite vietinius patiekalus, lankysite žymiausius restoranus, dalyvausite kulinariniuose turuose ir netgi maisto gaminimo pamokose. Tobulas pasirinkimas tikriems gurmanams.',
         location: 'Panevėžys',
         contactInfo: { email: 'gourmet-travel@gourmet.com', phone: '+37061456789' },
-        website: 'https://www.gourmettravels.lt',
+        website: 'https://interluxtravel.lt/',
         establishedYear: 2016,
         logo: 'https://img.freepik.com/premium-vector/free-vector-black-white-vintage-illustrative-travel-agent-logo_883906-2467.jpg'
       }     
@@ -217,7 +217,11 @@ const seedData = async () => {
         amenities: ['WiFi', 'Breakfast', 'Pool'],
         category: categories[1]._id,
         agency: agencies[1]._id,
-        destination: destinations[0]._id
+        destination: destinations[0]._id,
+        image: 'https://media.istockphoto.com/id/119926339/photo/resort-swimming-pool.jpg?s=612x612&w=0&k=20&c=9QtwJC2boq3GFHaeDsKytF4-CavYKQuy1jBD2IRfYKc=',
+        gallery:[
+          'https://media.istockphoto.com/id/119926339/photo/resort-swimming-pool.jpg?s=612x612&w=0&k=20&c=9QtwJC2boq3GFHaeDsKytF4-CavYKQuy1jBD2IRfYKc=', 'https://plus.unsplash.com/premium_photo-1661964071015-d97428970584?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aG90ZWx8ZW58MHx8MHx8fDA%3D', 'https://www.usatoday.com/gcdn/-mm-/05b227ad5b8ad4e9dcb53af4f31d7fbdb7fa901b/c=0-64-2119-1259/local/-/media/USATODAY/USATODAY/2014/08/13/1407953244000-177513283.jpg'
+        ]
       },
       {
         name: 'Glacier Inn',
@@ -227,7 +231,11 @@ const seedData = async () => {
         amenities: ['WiFi', 'Sauna'],
         category: categories[0]._id,
         agency: agencies[0]._id,
-        destination: destinations[1]._id
+        destination: destinations[1]._id,
+        image: 'https://plus.unsplash.com/premium_photo-1661964402307-02267d1423f5?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aG90ZWwlMjByb29tfGVufDB8fDB8fHww',
+        gallery: [
+          'https://plus.unsplash.com/premium_photo-1661964402307-02267d1423f5?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aG90ZWwlMjByb29tfGVufDB8fDB8fHww', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMUMQeZ-SsvgpqYcXLwp2JhAXmGsLxbp7_1w&s', 'https://media.istockphoto.com/id/1448506100/photo/male-hotel-receptionist-assisting-female-guest.jpg?s=612x612&w=0&k=20&c=xXJn95XgzSA4_LgGczr7ce-FnpcWXwYIr-fGH9yN_z0='
+        ]
       },
       {
         name: 'Parisian Charm Hotel',
@@ -237,7 +245,11 @@ const seedData = async () => {
         amenities: ['WiFi', 'Breakfast'],
         category: categories[3]._id,
         agency: agencies[3]._id,
-        destination: destinations[2]._id
+        destination: destinations[2]._id,
+        image: 'https://www.hotelscombined.com/himg/5b/cc/8b/ice-100053252-0746998_3XL-452362.jpg',
+        gallery: [
+          'https://www.hotelscombined.com/himg/5b/cc/8b/ice-100053252-0746998_3XL-452362.jpg', 'https://secure.s.forbestravelguide.com/img/properties/shangri-la-hotel-paris/shangri-la-hotel-paris-LAppartement-Prince%20Bonaparte.jpg', 'https://www.cordelia-paris-hotel.com/images_hotel_cordelia_paris/home/hotel-cordelia-paris-1.jpg'
+        ]
       },
       {
         name: 'Tokyo Tower Hotel',
@@ -247,7 +259,11 @@ const seedData = async () => {
         amenities: ['WiFi', 'Gym'],
         category: categories[4]._id,
         agency: agencies[4]._id,
-        destination: destinations[3]._id
+        destination: destinations[3]._id,
+        image:  'https://en.palacehoteltokyo.com/wp-content/uploads/Palace-Hotel-Tokyo-Premium-Suite-Living-Room-Overlaid-1300x640-1-640x470.jpg',
+        gallery: [
+          'https://en.palacehoteltokyo.com/wp-content/uploads/Palace-Hotel-Tokyo-Premium-Suite-Living-Room-Overlaid-1300x640-1-640x470.jpg', 'https://www.travelandleisure.com/thmb/GdlE0YLt16NZMDRBz-TGvw5Xfbc=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/TAL-bulgari-hotel-tokyo-pool-BLUGARITOKYO0423-12119235a51a4328a816930ede8baf33.jpg', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIBDN2aDqUzcyzp-RqljcXxCBy7hi6bKSEOg&s', 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/500956610.jpg?k=893ce269de9a881e635e48f42598395fd783a6da56a2fd83894f286cd5720766&o=&hp=1'
+        ]
       },
       {
         name: 'New York Skyline Hotel',
@@ -257,7 +273,11 @@ const seedData = async () => {
         amenities: ['WiFi', 'Pool', 'Spa'],
         category: categories[2]._id,
         agency: agencies[2]._id,
-        destination: destinations[4]._id
+        destination: destinations[4]._id,
+        image: 'https://upload.wikimedia.org/wikipedia/commons/8/8b/New_York_-_Manhattan_-_Plaza_Hotel.jpg',
+        gallery: [
+          'https://upload.wikimedia.org/wikipedia/commons/8/8b/New_York_-_Manhattan_-_Plaza_Hotel.jpg', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoV_du3XvtLcLDRyNsm24WWwykbc1k-aax7A&s', 'https://www.theplazany.com/wp-content/uploads/2022/02/Exterior_Night_1151x500.jpg', 'https://www.ca.kayak.com/rimg/himg/bd/43/4a/ice-135506-109412228-288542.jpg?width=1366&height=768&crop=true', 'https://www.ahstatic.com/photos/a568_rokga_00_p_1024x768.jpg'
+        ]
       }
     ])
 

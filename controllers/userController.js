@@ -5,151 +5,154 @@ const process = require("process");
 const Order = require("../models/orderModel");
 
 const register = async (req, res) => {
-    const { username, email, password, phoneNumber, address } = req.body
+  const { username, email, password, phoneNumber } = req.body;
 
-    if (!username || !email || !password || !phoneNumber) {
-        return res.status(400).json({ message: "All fields are required" })
-    }
+  if (!username || !email || !password) {
+    return res.status(400).send({ message: "All fields are required" });
+  }
 
-   
-    const existingUser = await User.findOne({ email })
+  const existingUser = await User.findOne({ email });
 
-    if (existingUser) {
-        return res.status(400).json({ message: "User already exists" })
-    }
+  if (existingUser) {
+    return res.status(400).send({ message: "Email already exists" });
+  }
 
-    try {
-        const hashedPassword = await bcrypt.hash(password, 10)
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-        const newUser = new User({
-            username,
-            email,
-            password: hashedPassword,
-            phoneNumber,
-            address,
-        })
+    const newUser = new User({
+      username,
+      email,
+      phoneNumber,
+      password: hashedPassword,
+    });
+    await newUser.save();
 
-        await newUser.save()
+    const token = jwt.sign(
+      {
+        username: newUser.username,
+        email: newUser.email,
+        id: newUser._id,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
 
-        const token = jwt.sign(
-            {
-                username: newUser.username,
-                email: newUser.email,
-                id: newUser._id,
-                address: newUser.address,
-                phoneNumber: newUser.phoneNumber,
-            },
-            process.env.JWT_SECRET,
-            { expiresIn: "1h" }
-        )
-
-        res.send ({
-            message: "User registered successfully",
-            token,
-            user: {
-                id: newUser._id,
-                username: newUser.username,
-                email: newUser.email,
-                phoneNumber: newUser.phoneNumber,
-                address: newUser.address,
-            },
-        })
-    } catch (err) {
-        res.status(500).send(err)
-    }
-}     
-
+    res.send({
+      message: "User registered successfully.",
+      token,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        phoneNumber: user.phoneNumber,
+      },
+    });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
 
 const login = async (req, res) => {
-    const { email, password } = req.body
+  const { email, password } = req.body;
 
-    if (!email || !password) {
-        return res.status(400).send({ message: "Invalid email or password" })
+  if (!email || !password) {
+    return res.status(400).send({ message: "Invalid email or password" });
+  }
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).send({ message: "Invalid email or password" });
     }
 
-    try {
-        const user = await User.findOne({ email })
+    const isMatch = await bcrypt.compare(password, user.password);
 
-        if (!user) {
-            return res.status(400).send({ message: "Invalid email or password" })
-        }
-
-        const isMatch = await bcrypt.compare(password, user.password)
-
-        if (!isMatch) {
-            return res.status(400).send({ message: "Invalid email or password" })
-        }
-
-        const token = jwt.sign(
-            {
-                username: user.username,
-                email: user.email,
-                id: user._id,
-                address: user.address,
-                phoneNumber: user.phoneNumber,
-                role: user.role
-            },
-            process.env.JWT_SECRET,
-            { expiresIn: "1h" }
-        )
-
-        res.send({
-            message: "User logged in successfully",
-            token,
-        })
-    } catch (err) {
-        res.status(500).send(err)
+    if (!isMatch) {
+      return res.status(400).send({ message: "Invalid email or password" });
     }
-}
+    const token = jwt.sign(
+      {
+        username: user.username,
+        email: user.email,
+        id: user._id,
+        role: user.role,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
 
-const getUser = async (req, res) => {
-    try {
-        if (req.user.role !== 'admin') {
-            return res.status(403).send({ message: 'Access denied' })
-        }
+    res.send({ message: "User Successfully Logged In", token });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
 
-        const users = await User.find().select('-password')
-        res.send(users)
-    } catch (err) {
-        res.status(500).send(err)
-    }
-}
-
+const getUsers = async (req, res) => {
+  try {
+    const users = await User.find();
+    res.send(users);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
 
 const deleteUser = async (req, res) => {
-    try {
-        const { id } = req.params 
-        const currentUserId = req.user._id
+  try {
+    const { id } = req.params;
+    const currentUserId = req.user.id;
 
-        if(id === currentUserId) {
-            return res.status(400).send({ message: "You cannot delete yourself" })
-        }
-
-        const deletedUser = await User.findByIdAndDelete(id)
-
-        if (!deletedUser) {
-            return res.status(404).send({ message: "User not found" })
-        }
-
-        res.send({ message: "User deleted successfully", data: deletedUser })
-    } catch (err) {
-        res.status(500).send(err)
+    if (id === currentUserId) {
+      return res.status(403).send({ error: "You cannot delete yourself" });
     }
-}
 
+    const deletedUser = await User.findByIdAndDelete(id);
 
-const updateUser = async (req, res) => {
+    if (!deletedUser) {
+      return res.status(404).send({ error: "User not found" });
+    }
+
+    res.send({ message: "User was deleted", data: deletedUser });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
+const getMyOrders = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const orders = await Order.find({ user: userId })
+      .populate("items.productId", "title price image");
+
+    res.status(200).json(orders);
+  } catch (error) {
+    console.error("Error while retrieving user orders:", error);
+    res.status(500).json({ message: "Failed to retrieve orders", error });
+  }
+};
+
+const getCurrentUser = async (req, res) => {
+    try {
+      const user = await User.findById(req.user.id).select("-password")
+      if (!user) {
+        return res.status(404).json({ message: "User not found" })
+      }
+      res.status(200).json(user)
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch user", error })
+    }
+  }
+
+  const updateUser = async (req, res) => {
     try {
         const { id } = req.params
-        const { username, email, password, phoneNumber, address } = req.body
+        const { username, email, phoneNumber, address } = req.body
 
         const updateData = { username, email, phoneNumber, address }
 
-        if (password) {
-            updateData.password = await bcrypt.hash(password, 10)
-        }
-
-        const updatedUser = await User.findByIdAndUpdate(id, updateData, { new: true })
+        const updatedUser = await User.findByIdAndUpdate(id, updateData, { new: true }).select('-password')
 
         if (!updatedUser) {
             return res.status(404).send({ message: "User not found" })
@@ -161,26 +164,12 @@ const updateUser = async (req, res) => {
     }
 }
 
-
-const getMyOrders = async (req, res) => {
-    try {
-      const userId = req.user._id;
-  
-      const orders = await Order.find({ user: userId })
-        .populate("items.destination", "title price image");
-  
-      res.status(200).json(orders);
-    } catch (error) {
-      console.error("Error while retrieving user orders:", error);
-      res.status(500).json({ message: "Failed to retrieve orders", error });
-    }
-  };
-
 module.exports = {
     register,
     login,
-    getUser,
+    getUsers,
     deleteUser,
-    updateUser,
     getMyOrders,
-}
+    getCurrentUser,
+    updateUser
+};

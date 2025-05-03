@@ -44,7 +44,7 @@ const userSchema = new mongoose.Schema(
         },
         profilePicture: {
             type: String,
-            default: "../public/profile-picture-default.jpg",
+            default: "defaultProfilePic.png" ,
         },
         address: {
             street: {
@@ -53,7 +53,7 @@ const userSchema = new mongoose.Schema(
             city: {
                 type: String,
             },
-            zipCode: {
+            postalCode: {
                 type: String,
             },
             country: {
@@ -72,6 +72,12 @@ const userSchema = new mongoose.Schema(
                   message: (props) => `${props.value} is not a valid phone number`,
             },
         },
+        orders: [
+            {
+              type: mongoose.Schema.Types.ObjectId,
+              ref: "Order",
+            },
+          ],
     }
 )
 

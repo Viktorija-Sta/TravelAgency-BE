@@ -2,6 +2,7 @@ const Agency = require('../models/agencyModel')
 const Destination = require('../models/destinationModel')
 const Hotel = require('../models/hotelModel')
 const Category = require('../models/categoryModel')
+const Review = require('../models/reviewModel')
 
 // CREATE
 const createAgency = async (req, res) => {
@@ -26,28 +27,32 @@ const getAllAgencies = async (req, res) => {
 
 // GET BY ID + RELATIONS
 const getAgencyById = async (req, res) => {
-    try {
-        const { id } = req.params
+  try {
+    const { id } = req.params
 
-        const agency = await Agency.findById(id)
-        if (!agency) {
-            return res.status(404).json({ message: 'Agency not found' })
-        }
-
-        const destinations = await Destination.find({ agency: id })
-        const hotels = await Hotel.find({ agency: id })
-        const categories = await Category.find({ agency: id })
-
-        res.status(200).json({
-            agency,
-            destinations,
-            hotels,
-            categories
-        })
-    } catch (error) {
-        res.status(500).json({ message: 'Failed to fetch agency details', error })
+    const agency = await Agency.findById(id)
+    if (!agency) {
+      return res.status(404).json({ message: 'Agency not found' })
     }
+
+    const destinations = await Destination.find({ agency: id })
+    const hotels = await Hotel.find({ agency: id })
+    const categories = await Category.find({ agency: id })
+    
+    const reviews = await Review.find({ agency: id }).populate('user', 'username')
+
+    res.status(200).json({
+      agency,
+      destinations,
+      hotels,
+      categories,
+      reviews
+    })
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch agency details', error })
+  }
 }
+
 
 // UPDATE
 const updateAgency = async (req, res) => {
