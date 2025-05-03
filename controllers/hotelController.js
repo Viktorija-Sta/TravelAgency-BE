@@ -16,15 +16,22 @@ const createHotel = async (req, res) => {
 // GET ALL HOTELS
 const getAllHotels = async (req, res) => {
     try {
-        const hotels = await Hotel.find()
-            .populate('destination', 'name location')
-            .populate('category', 'name')
-            .populate('agency', 'name')
-        res.json(hotels)
+      const filter = {}
+  
+      if (req.query.agency) {
+        filter.agency = req.query.agency
+      }
+  
+      const hotels = await Hotel.find(filter)
+        .populate('destination', 'name location')
+        .populate('category', 'name')
+        .populate('agency', 'name')
+  
+      res.json(hotels)
     } catch (error) {
-        res.status(500).json({ message: 'Failed to fetch hotels', error })
+      res.status(500).json({ message: 'Failed to fetch hotels', error })
     }
-}
+  }
 
 // GET SINGLE HOTEL
 const getHotelById = async (req, res) => {

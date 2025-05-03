@@ -62,25 +62,26 @@ const createReview = async (req, res) => {
 
 const getReviews = async (req, res) => {
     try {
-        const { destination, hotel, agency } = req.params
-
-        let reviews
-        if (destination) {
-            reviews = await Review.find({ destination }).populate('userId', 'username')
-        } else if (hotel) {
-            reviews = await Review.find({ hotel }).populate('userId', 'username')
-        } else if (agency) {
-            reviews = await Review.find({ agency }).populate('userId', 'username')
-        } else {
-            return res.status(400).json({ message: 'Please provide a valid destination, hotel, or agency ID' })
-        }
-
-        res.status(200).json(reviews)
+      const { destination, hotel, agency } = req.query
+  
+      let filter = {}
+  
+      if (destination) filter.destination = destination
+      if (hotel) filter.hotel = hotel
+      if (agency) filter.agency = agency
+  
+      const reviews = await Review.find(filter)
+        .populate("user", "username")
+        .populate("destination", "name") 
+        .populate("hotel", "name")
+        .populate("agency", "name")
+  
+      res.status(200).json(reviews)
     } catch (error) {
-        console.error(error)
-        res.status(500).json({ message: 'Something went wrong', error })
+      console.error(error)
+      res.status(500).json({ message: "Something went wrong", error })
     }
-}
+  }
 
 const deleteReview = async (req, res) => {
     try {
@@ -134,10 +135,26 @@ const updateReview = async (req, res) => {
     }
 }
 
+const getAllReviews = async (req, res) => {
+    try {
+      const reviews = await Review.find()
+        .populate('user', 'username')
+        .populate('destination', 'name')
+        .populate('hotel', 'name')
+        .populate('agency', 'name')
+  
+      res.status(200).json(reviews)
+    } catch (error) {
+      console.error(error)
+      res.status(500).json({ message: 'Nepavyko gauti visų atsiliepimų', error })
+    }
+  }
+
 
 module.exports = {
     createReview,
     getReviews,
     deleteReview,
     updateReview,
+    getAllReviews,
 }

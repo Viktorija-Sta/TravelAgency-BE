@@ -18,7 +18,11 @@ const createDestination = async (req, res) => {
 // GET ALL
 const getAllDestinations = async (req, res) => {
     try {
-        const destinations = await Destination.find()
+        const filter = {}
+        if (req.query.agency) {
+            filter.agency = req.query.agency
+        }
+        const destinations = await Destination.find(filter)
             .populate('agency', 'name location')
             .populate('category', 'name')
         res.json(destinations)
@@ -79,55 +83,51 @@ const deleteDestination = async (req, res) => {
     }
 }
 
-const searchDestinations= async (req, res) => {
+const searchDestinations = async (req, res) => {
     try {
-      const { q } = req.query
-  
-      if (!q || q.trim() === "") {
-        return res
-          .status(400)
-          .json({ message: 'Query parameter "q" is required' })
-      }
-  
-      const regex = new RegExp(q, "i")
-  
-      const destinations = await Destination.find({
-        $or: [
-            { name: regex }, 
-            { description: regex }, 
-            { location: regex }
-        ],
-      })
-        .limit(30)
-        .populate("category")
-  
-      res.status(200).json(destinations)
-    } catch (error) {
-      console.error("Search error:", error)
-      res.status(500).json({ message: "Server error during search" })
-    }
-  }
+        const { q } = req.query
 
-  const getDestinationsByCategory = async (req, res, next) => {
-    try {
-      const categoryName = req.params.categoryName
-  
-      const category = await Category.findOne({ name: categoryName })
-  
-      if (!category) {
-        return res.status(404).json({ message: "Category not found" })
-      }
-  
-      const destinations = await Destination.find({ category: category._id }).populate(
-        "category"
-      )
-  
-      res.json(destinations)
-    } catch (err) {
-      console.error(err)
-      res.status(500).json({ message: "Server error" })
+        if (!q || q.trim() === "") {
+            return res.status(400).json({ message: 'Query parameter "q" is required' })
+        }
+
+        const regex = new RegExp(q, "i")
+
+        const destinations = await Destination.find({
+            $or: [
+                { name: regex },
+                { description: regex },
+                { location: regex }
+            ],
+        })
+            .limit(30)
+            .populate("category")
+
+        res.status(200).json(destinations)
+    } catch (error) {
+        console.error("Search error:", error)
+        res.status(500).json({ message: "Server error during search" })
     }
-  }
+}
+
+const getDestinationsByCategory = async (req, res, next) => {
+    try {
+        const categoryName = req.params.categoryName
+
+        const category = await Category.findOne({ name: categoryName })
+
+        if (!category) {
+            return res.status(404).json({ message: "Category not found" })
+        }
+
+        const destinations = await Destination.find({ category: category._id }).populate("category")
+
+        res.json(destinations)
+    } catch (err) {
+        console.error(err)
+        res.status(500).json({ message: "Server error" })
+    }
+}
 
 module.exports = {
     createDestination,

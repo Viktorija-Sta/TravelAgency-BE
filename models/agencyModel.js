@@ -1,3 +1,4 @@
+const e = require('express');
 const mongoose = require('mongoose');
 
 const agencySchema = new mongoose.Schema(
@@ -8,6 +9,20 @@ const agencySchema = new mongoose.Schema(
             trim: true,
         },
         description: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+        fullDescription: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+        establishedYear: {
+            type: Number,
+            required: true,
+        },
+        website: {
             type: String,
             required: true,
             trim: true,

@@ -41,6 +41,18 @@ const destinationSchema = new mongoose.Schema(
             min: 0,
             max: 5,
         },
+        reviewsCount: {
+            type: Number,
+            default: 0,
+        },
+        departureDate: {
+            type: String,
+            required: true,
+        },
+        duration: {
+            type: Number,
+            required: true,
+        },
         category : {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Category',
