@@ -64,15 +64,18 @@ const getReviews = async (req, res) => {
     try {
       const { destination, hotel, agency } = req.query
   
-      let filter = {}
+      if (!destination && !hotel && !agency) {
+        return res.status(400).json({ message: "Filtras (destination / hotel / agency) yra būtinas." })
+      }
   
+      const filter = {}
       if (destination) filter.destination = destination
       if (hotel) filter.hotel = hotel
       if (agency) filter.agency = agency
   
       const reviews = await Review.find(filter)
         .populate("user", "username")
-        .populate("destination", "name") 
+        .populate("destination", "name")
         .populate("hotel", "name")
         .populate("agency", "name")
   

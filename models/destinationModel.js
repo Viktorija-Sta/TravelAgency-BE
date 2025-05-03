@@ -45,6 +45,7 @@ const destinationSchema = new mongoose.Schema(
             type: Number,
             default: 0,
         },
+        
         departureDate: {
             type: String,
             required: true,

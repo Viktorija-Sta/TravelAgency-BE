@@ -2,6 +2,7 @@ const Destination = require('../models/destinationModel')
 const Hotel = require('../models/hotelModel')
 const Agency = require('../models/agencyModel')
 const Category = require('../models/categoryModel')
+const Review = require('../models/reviewModel')
 
 // CREATE
 const createDestination = async (req, res) => {
@@ -22,6 +23,11 @@ const getAllDestinations = async (req, res) => {
         if (req.query.agency) {
             filter.agency = req.query.agency
         }
+
+        if (req.query.category) {
+            filter.category = req.query.category  
+        }
+
         const destinations = await Destination.find(filter)
             .populate('agency', 'name location')
             .populate('category', 'name')
@@ -34,26 +40,29 @@ const getAllDestinations = async (req, res) => {
 // GET BY ID with related hotels, agency, category
 const getDestinationById = async (req, res) => {
     try {
-        const { id } = req.params
-
-        const destination = await Destination.findById(id)
-            .populate('agency', 'name location contactInfo')
-            .populate('category', 'name')
-
-        if (!destination) {
-            return res.status(404).json({ message: 'Destination not found' })
-        }
-
-        const hotels = await Hotel.find({ destination: id }).populate('agency category')
-
-        res.json({
-            destination,
-            hotels
-        })
+      const { id } = req.params
+  
+      const destination = await Destination.findById(id)
+        .populate('agency', 'name location contactInfo')
+        .populate('category', 'name')
+  
+      if (!destination) {
+        return res.status(404).json({ message: 'Destination not found' })
+      }
+  
+      const hotels = await Hotel.find({ destination: id }).populate('agency category')
+  
+      const reviews = await Review.find({ destination: id }).populate('user', 'username')
+  
+      res.json({
+        destination,
+        hotels,
+        reviews,
+      })
     } catch (error) {
-        res.status(500).json({ message: 'Failed to fetch destination', error })
+      res.status(500).json({ message: 'Failed to fetch destination', error })
     }
-}
+  }
 
 // UPDATE
 const updateDestination = async (req, res) => {
