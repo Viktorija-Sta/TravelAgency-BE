@@ -5,30 +5,39 @@ const { ALLOWED_ORDER_STATUSES } = require("../constants/orderStatus")
 
 const createOrder = async (req, res) => {
     try {
-        if (!req.user) {
-            return res.status(401).send({ message: "Access denied. Please login" })
-        }
-
-        const userId = req.user._id
-        const { items, totalAmount, shippingAddress } = req.body
-
-        if (!items || !shippingAddress || !totalAmount) {
-            return res.status(400).send({ message: "Missing required fields" })
-        }
-
-        const newOrder = new Order({
-            user: userId,
-            items,
-            totalAmount,
-            shippingAddress,
-        })
-
-        await newOrder.save()
-        res.send(newOrder)
+      if (!req.user) {
+        return res.status(401).send({ message: "Access denied. Please login" });
+      }
+  
+      const userId = req.user._id;
+      const { items, totalAmount, shippingAddress } = req.body;
+  
+      if (!items || !Array.isArray(items) || items.length === 0) {
+        return res.status(400).send({ message: "Užsakymo prekės yra privalomos" });
+      }
+  
+      if (!shippingAddress || !totalAmount) {
+        return res.status(400).send({ message: "Trūksta būtinos informacijos" });
+      }
+  
+      const newOrder = new Order({
+        user: userId,
+        items,
+        totalAmount,
+        shippingAddress,
+        orderDate: new Date(),
+        status: "pending"
+      });
+  
+      await newOrder.save();
+  
+      res.status(201).json({ message: "Užsakymas sėkmingai pateiktas", order: newOrder });
     } catch (err) {
-        res.status(500).send({ message: "Something went wrong with order", err })
+      console.error("Klaida sukuriant užsakymą:", err);
+      res.status(500).send({ message: "Įvyko klaida", error: err });
     }
-}
+  };
+  
 
 const getOrderById = async (req, res) => {
     try {

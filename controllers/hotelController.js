@@ -1,4 +1,6 @@
+const Agency = require('../models/agencyModel');
 const Category = require('../models/categoryModel');
+const Destination = require('../models/destinationModel');
 const Hotel = require('../models/hotelModel');
 const Review = require('../models/reviewModel');
 
@@ -48,15 +50,18 @@ const getHotelById = async (req, res) => {
         const { id } = req.params
 
         const hotel = await Hotel.findById(id)
-            .populate('destination', 'name location')
-            .populate('category', 'name')
-            .populate('agency', 'name')
+
         if (!hotel) {
             return res.status(404).json({ message: 'Hotel not found' })
         }
 
+        const destinations = await Destination.find({ hotel: id })
+        const categories = await Category.find({ hotel: id })
+        const agencies = await Agency.find({ hotel: id })
         const reviews = await Review.find({ hotel: id }).populate('user', 'username')
-        res.json(hotel, reviews)
+           
+
+        res.json({ hotel, categories, destinations, agencies, reviews })
     } catch (error) {
         res.status(500).json({ message: 'Failed to fetch hotel', error })
     }

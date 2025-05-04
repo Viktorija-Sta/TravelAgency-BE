@@ -59,6 +59,7 @@ const seedData = async () => {
     ])
 
     console.log('📦 Kuriamos agentūros...')
+    
     const agencies = await Agency.insertMany([
       {
         name: 'TravelPro',

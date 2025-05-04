@@ -5,60 +5,46 @@ const Agency = require('../models/agencyModel')
 
 const createReview = async (req, res) => {
     try {
-        const { rating, comment, user } = req.body
-        const { destination, hotel, agency } = req.params
-
-        if (!rating || rating < 1 || rating > 5) {
-            return res.status(400).json({ message: 'Rating must be between 1 and 5' })
-        }
-
-        const existingReview = await Review.findOne({
-            user: req.user._id,
-            destination,
-            hotel,
-            agency,
-            
-        })
-
-        if (existingReview) {
-            existingReview.rating = rating
-            existingReview.comment = comment || existingReview.comment
-            await existingReview.save()
-            return res.status(200).json({ message: 'Review updated successfully', review: existingReview })
-        }
-
-        const newReview = new Review({
-            user: req.user._id,
-            destination,
-            hotel,
-            agency,
-            rating,
-            comment,
-        })
-        await newReview.save()
-
-        const allReviews = await Review.find({
-            destination,
-            hotel,
-            agency,
-        })
-
-        const averageRating = allReviews.reduce((acc, review) => acc + review.rating, 0) / allReviews.length
-
-        if (destination) {
-            await Destination.findByIdAndUpdate(destination, { rating: averageRating })
-        } else if (hotel) {
-            await Hotel.findByIdAndUpdate(hotel, { rating: averageRating })
-        } else if (agency) {
-            await Agency.findByIdAndUpdate(agency, { rating: averageRating })
-        }
-
-        res.status(201).json({ message: 'Review created successfully', review: newReview })
+      const { rating, comment, destination, hotel, agency } = req.body
+  
+      if (!rating || rating < 1 || rating > 5) {
+        return res.status(400).json({ message: 'Rating must be between 1 and 5' })
+      }
+  
+      const newReview = new Review({
+        user: req.user._id,
+        destination,
+        hotel,
+        agency,
+        rating,
+        comment,
+      })
+      await newReview.save()
+  
+      const filter = {}
+      if (destination) filter.destination = destination
+      if (hotel) filter.hotel = hotel
+      if (agency) filter.agency = agency
+  
+      const allReviews = await Review.find(filter)
+      const averageRating = allReviews.length
+        ? allReviews.reduce((acc, review) => acc + review.rating, 0) / allReviews.length
+        : rating
+  
+      if (destination) {
+        await Destination.findByIdAndUpdate(destination, { rating: averageRating })
+      } else if (hotel) {
+        await Hotel.findByIdAndUpdate(hotel, { rating: averageRating })
+      } else if (agency) {
+        await Agency.findByIdAndUpdate(agency, { rating: averageRating })
+      }
+  
+      res.status(201).json({ message: 'Review created successfully', review: newReview })
     } catch (error) {
-        console.error(error)
-        res.status(500).json({ message: 'Something went wrong', error })
+      console.error(error)
+      res.status(500).json({ message: 'Something went wrong', error })
     }
-}
+  }
 
 const getReviews = async (req, res) => {
     try {

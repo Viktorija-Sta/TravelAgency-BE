@@ -53,6 +53,10 @@ const agencySchema = new mongoose.Schema(
             type: String,
             default: "../public/images.jpg",
         },
+        reviewsCount: {
+            type: Number,
+            default: 0,
+        },
     }
 )
 

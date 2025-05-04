@@ -4,7 +4,7 @@ const { createReview, updateReview, deleteReview, getReviews, getAllReviews } = 
 const router = express.Router()
 
 router.get('/', getAllReviews)
-router.post('/:id/reviews', authMiddleware, createReview)
+router.post('/', authMiddleware, createReview)
 router.get('/:id/reviews', authMiddleware, getReviews)
 router.delete('/:id/reviews', authMiddleware, deleteReview)
 router.put('/:id/reviews', authMiddleware, updateReview)
