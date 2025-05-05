@@ -7,7 +7,7 @@ const ROLES = require("../config/roles");
 const authMiddleware = require('../middlewares/authMiddleware');
 const { getStats, getAllOrders, updateOrder } = require('../controllers/adminController');
 
-router.get('/stats', authMiddleware, rolesMiddlewares(ROLES.ADMIN), getStats)
+router.get('/admin/metrics', authMiddleware, rolesMiddlewares(ROLES.ADMIN), getStats)
 router.put('/orders/:orderId', authMiddleware, rolesMiddlewares(ROLES.ADMIN), updateOrder)
 router.get('/orders', authMiddleware, getAllOrders)
 

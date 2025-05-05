@@ -31,20 +31,46 @@ const getStats = async (req, res) => {
 const getAllOrders = async (req, res) => {
   try {
     if (req.user.role !== "admin") {
-      return res.status(403).send({ message: "Only ADMIN can see all orders" })
+      return res.status(403).send({ message: "Only ADMIN can see all orders" });
     }
 
     const orders = await Order.find()
-    .populate('user', 'email username')
-    .populate('destination', 'name price imageUrl')
-    .populate('hotel', 'name price imageUrl') 
+      .populate("user", "email username")
+      .lean();
 
-    res.send(orders)
+    const enrichedOrders = await Promise.all(
+      orders.map(async (order) => {
+        const enrichedItems = await Promise.all(
+          order.items.map(async (item) => {
+            let productDetails = null;
+
+            if (item.modelType === "Hotel") {
+              productDetails = await Hotel.findById(item.productId).select("name pricePerNight image");
+            } else if (item.modelType === "Destination") {
+              productDetails = await Destination.findById(item.productId).select("name price imageUrl");
+            }
+
+            return {
+              ...item,
+              details: productDetails,
+            };
+          })
+        );
+
+        return {
+          ...order,
+          items: enrichedItems,
+        };
+      })
+    );
+
+    res.send(enrichedOrders);
   } catch (error) {
-    console.error('Klaida gaunant užsakymus:', error)
-    res.status(500).send(error)
+    console.error("Klaida gaunant užsakymus:", error);
+    res.status(500).send({ message: "Server error", error });
   }
-}
+};
+
 const updateOrder = async (req, res) => {
   try {
     const { id } = req.params;

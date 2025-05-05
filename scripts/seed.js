@@ -282,6 +282,39 @@ const seedData = async () => {
       }
     ])
 
+    console.log('🔗 Priskiriamos agentūros prie viešbučių pagal kelionę...')
+
+    for (const hotel of await Hotel.find({})) {
+      const destination = await Destination.findById(hotel.destination)
+      if (destination?.agency) {
+        hotel.agency = destination.agency
+        await hotel.save()
+        console.log(`✅ Agentūra priskirta "${hotel.name}" (Kelionė: ${destination.name})`)
+      } else {
+        console.log(`⚠️ Nerasta agentūra viešbučiui "${hotel.name}"`)
+      }
+    }
+
+    console.log('🔗 Priskiriami viešbučiai prie kelionių...')
+      const allHotels = await Hotel.find({})
+
+      for (const destination of destinations) {
+        const relatedHotels = allHotels.filter(
+          (hotel) => hotel.destination.toString() === destination._id.toString()
+        )
+        const hotelIds = relatedHotels.map((hotel) => hotel._id)
+
+        if (hotelIds.length > 0) {
+          await Destination.updateOne(
+            { _id: destination._id },
+            { $set: { hotels: hotelIds } }
+          )
+          console.log(`✅ Priskirta ${hotelIds.length} viešb. -> "${destination.name}"`)
+        } else {
+          console.log(`⚠️ Kelionei "${destination.name}" nebuvo rasta viešbučių.`)
+        }
+      }
+
     console.log('📦 Kuriami atsiliepimai...')
     await Review.insertMany([
       {

@@ -5,6 +5,11 @@ const orderItemSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     required: true,
   },
+  modelType: {
+    type: String,
+    enum: ['Hotel', 'Destination'],
+    required: true,
+  },
   quantity: {
     type: Number,
     required: true,

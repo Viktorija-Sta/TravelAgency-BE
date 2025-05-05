@@ -62,7 +62,7 @@ const destinationSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Agency',
         },
-        hotel: [{
+        hotels: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Hotel',
         }],

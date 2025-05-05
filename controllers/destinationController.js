@@ -45,18 +45,21 @@ const getDestinationById = async (req, res) => {
       const destination = await Destination.findById(id)
         .populate('agency', 'name location contactInfo')
         .populate('category', 'name')
+        .populate({
+          path: 'hotels',
+          model: 'Hotel',
+          populate: ['agency', 'category'] 
+        })
   
       if (!destination) {
         return res.status(404).json({ message: 'Destination not found' })
       }
   
-      const hotels = await Hotel.find({ destination: id }).populate('agency category')
-  
       const reviews = await Review.find({ destination: id }).populate('user', 'username')
   
       res.json({
         destination,
-        hotels,
+        hotels: destination.hotels,
         reviews,
       })
     } catch (error) {

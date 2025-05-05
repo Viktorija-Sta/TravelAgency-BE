@@ -50,6 +50,9 @@ const getHotelById = async (req, res) => {
         const { id } = req.params
 
         const hotel = await Hotel.findById(id)
+            .populate('destination', 'name')
+            .populate('category', 'name')
+            .populate('agency', 'name')
 
         if (!hotel) {
             return res.status(404).json({ message: 'Hotel not found' })
