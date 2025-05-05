@@ -64,8 +64,6 @@ const userSchema = new mongoose.Schema(
             type: String,
             trim: true,
             default: null,
-            sparse: true, 
-            unique: true, 
             validate: {
               validator: function (value) {
                 return !value || /^\+?\d{9,15}$/.test(value);
