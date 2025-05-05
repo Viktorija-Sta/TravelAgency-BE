@@ -62,6 +62,10 @@ const destinationSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Agency',
         },
+        hotel: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Hotel',
+        }],
     },
     {
         timestamps: true,
