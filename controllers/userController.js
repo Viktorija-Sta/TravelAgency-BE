@@ -5,7 +5,7 @@ const process = require("process");
 const Order = require("../models/orderModel");
 
 const register = async (req, res) => {
-  const { username, email, password, phoneNumber } = req.body;
+  const { username, email, password } = req.body;
 
   if (!username || !email || !password) {
     return res.status(400).send({ message: "All fields are required" });
@@ -23,7 +23,6 @@ const register = async (req, res) => {
     const newUser = new User({
       username,
       email,
-      phoneNumber,
       password: hashedPassword,
     });
     await newUser.save();
@@ -42,14 +41,14 @@ const register = async (req, res) => {
       message: "User registered successfully.",
       token,
       user: {
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        role: user.role,
-        phoneNumber: user.phoneNumber,
+        id: newUser._id,
+        username: newUser.username,
+        email: newUser.email,
+        role: newUser.role,
       },
     });
   } catch (error) {
+    console.error("REGISTRATION ERROR:", error)
     res.status(500).send(error);
   }
 };

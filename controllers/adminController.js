@@ -74,32 +74,31 @@ const getAllOrders = async (req, res) => {
 
 const updateOrder = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { orderId } = req.params;
     const { status } = req.body;
 
     if (status && !ALLOWED_ORDER_STATUSES.includes(status)) {
-        return res.status(400).send({ error: "Invalid order status" });
-      } 
+      return res.status(400).send({ error: "Invalid order status" });
+    }
 
     if (req.user.role !== "admin") {
-      return res.status(403).send({ message: "Only ADMIN can update orders" })
+      return res.status(403).send({ message: "Only ADMIN can update orders" });
     }
-
 
     const updatedOrder = await Order.findByIdAndUpdate(
-        id,
-        { $set: req.body },
-        { new: true }
-    )
+      orderId,
+      { $set: { status } },
+      { new: true }
+    );
 
     if (!updatedOrder) {
-      return res.status(404).send({ message: "Order not found" })
+      return res.status(404).send({ message: "Order not found" });
     }
 
-    res.status(200).send(updatedOrder)
+    res.status(200).send(updatedOrder);
   } catch (error) {
-    console.error('Klaida atnaujinant užsakymo statusą:', error)
-    res.status(500).send({ message: "Server error updating order status" })
+    console.error('Klaida atnaujinant užsakymo statusą:', error);
+    res.status(500).send({ message: "Server error updating order status" });
   }
 }
 

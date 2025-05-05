@@ -62,16 +62,17 @@ const userSchema = new mongoose.Schema(
         },
         phoneNumber: {
             type: String,
-            required: true,
-            unique: true,
             trim: true,
+            default: null,
+            sparse: true, 
+            unique: true, 
             validate: {
-                validator: function (value) {
-                    return /^\+?\d{9,15}$/.test(value);
-                  },
-                  message: (props) => `${props.value} is not a valid phone number`,
+              validator: function (value) {
+                return !value || /^\+?\d{9,15}$/.test(value);
+              },
+              message: (props) => `${props.value} is not a valid phone number`,
             },
-        },
+          },
         orders: [
             {
               type: mongoose.Schema.Types.ObjectId,

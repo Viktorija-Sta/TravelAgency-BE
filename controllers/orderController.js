@@ -110,32 +110,33 @@ const getAllOrders = async (req, res) => {
 
 const updateOrderStatus = async (req, res) => {
     try {
+        const { orderId } = req.params;
+        const { status } = req.body;
+    
+        if (status && !ALLOWED_ORDER_STATUSES.includes(status)) {
+          return res.status(400).send({ error: "Invalid order status" });
+        }
+    
         if (req.user.role !== "admin") {
-            return res.status(403).send({ message: "Access denied" })
+          return res.status(403).send({ message: "Only ADMIN can update orders" });
         }
-
-        const { id } = req.params
-        const { status } = req.body
-
-        if (!ALLOWED_ORDER_STATUSES.includes(status)) {
-            return res.status(400).send({ message: "Invalid order status" })
-        }
-
+    
         const updatedOrder = await Order.findByIdAndUpdate(
-            id,
-            { status },
-            { new: true }
-        )
-
+          orderId,
+          { $set: { status } },
+          { new: true }
+        );
+    
         if (!updatedOrder) {
-            return res.status(404).send({ message: "Order not found" })
+          return res.status(404).send({ message: "Order not found" });
         }
-
-        res.send(updatedOrder)
-    } catch (err) {
-        res.status(500).send({ message: "Something went wrong", err })
+    
+        res.status(200).send(updatedOrder);
+      } catch (error) {
+        console.error('Klaida atnaujinant užsakymo statusą:', error);
+        res.status(500).send({ message: "Server error updating order status" });
+      }
     }
-}
 const deleteOrder = async (req, res) => {
     try {
         if (req.user.role !== "admin") {
