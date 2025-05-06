@@ -4,6 +4,9 @@ const Destination = require('../models/destinationModel')
 const Hotel = require('../models/hotelModel')
 const Review = require('../models/reviewModel')
 
+/**
+ * Sukuria naują viešbutį
+ */
 const createHotel = async (req, res) => {
     try {
         const hotel = new Hotel(req.body)
@@ -15,33 +18,39 @@ const createHotel = async (req, res) => {
     }
 }
 
+/**
+ * Grąžina visus viešbučius, su galimybe filtruoti pagal agentūrą, kategoriją ir kelionę
+ */
 const getAllHotels = async (req, res) => {
     try {
-      const filter = {}
-  
-      if (req.query.agency) {
-        filter.agency = req.query.agency
-    }
+        const filter = {}
 
-    if (req.query.category) {
-        filter.category = req.query.category  
-    }
+        if (req.query.agency) {
+            filter.agency = req.query.agency
+        }
 
-    if (req.query.destination) {
-      filter.destination = req.query.destination 
-    }
-  
-      const hotels = await Hotel.find(filter)
-        .populate('destination', 'name location')
-        .populate('category', 'name')
-        .populate('agency', 'name')
-  
-      res.json(hotels)
+        if (req.query.category) {
+            filter.category = req.query.category
+        }
+
+        if (req.query.destination) {
+            filter.destination = req.query.destination
+        }
+
+        const hotels = await Hotel.find(filter)
+            .populate('destination', 'name location')
+            .populate('category', 'name')
+            .populate('agency', 'name')
+
+        res.json(hotels)
     } catch (error) {
-      res.status(500).json({ message: 'Failed to fetch hotels', error })
+        res.status(500).json({ message: 'Failed to fetch hotels', error })
     }
-  }
+}
 
+/**
+ * Grąžina viešbutį pagal ID kartu su susijusiais duomenimis (agentūra, kategorija, kelionės, atsiliepimai)
+ */
 const getHotelById = async (req, res) => {
     try {
         const { id } = req.params
@@ -55,11 +64,11 @@ const getHotelById = async (req, res) => {
             return res.status(404).json({ message: 'Hotel not found' })
         }
 
+        // Surenkami susiję duomenys
         const destinations = await Destination.find({ hotel: id })
         const categories = await Category.find({ hotel: id })
         const agencies = await Agency.find({ hotel: id })
         const reviews = await Review.find({ hotel: id }).populate('user', 'username')
-           
 
         res.json({ hotel, categories, destinations, agencies, reviews })
     } catch (error) {
@@ -67,6 +76,9 @@ const getHotelById = async (req, res) => {
     }
 }
 
+/**
+ * Atnaujina viešbutį pagal ID
+ */
 const updateHotel = async (req, res) => {
     try {
         const { id } = req.params
@@ -74,77 +86,86 @@ const updateHotel = async (req, res) => {
             .populate('destination', 'name location')
             .populate('category', 'name')
             .populate('agency', 'name')
+
         if (!updatedHotel) {
             return res.status(404).json({ message: 'Hotel not found' })
         }
+
         res.json(updatedHotel)
     } catch (error) {
         res.status(500).json({ message: 'Failed to update hotel', error })
     }
 }
 
+/**
+ * Ištrina viešbutį pagal ID
+ */
 const deleteHotel = async (req, res) => {
     try {
         const { id } = req.params
         const deletedHotel = await Hotel.findByIdAndDelete(id)
+
         if (!deletedHotel) {
             return res.status(404).json({ message: 'Hotel not found' })
         }
+
         res.json({ message: 'Hotel deleted successfully' })
     } catch (error) {
         res.status(500).json({ message: 'Failed to delete hotel', error })
     }
 }
 
-const searchHotels= async (req, res) => {
+/**
+ * Ieško viešbučių pagal pavadinimą, vietą arba aprašymą
+ */
+const searchHotels = async (req, res) => {
     try {
-      const { q } = req.query
-  
-      if (!q || q.trim() === "") {
-        return res
-          .status(400)
-          .json({ message: 'Query parameter "q" is required' })
-      }
-  
-      const regex = new RegExp(q, "i")
-  
-      const hotels = await Hotel.find({
-        $or: [
-            { name: regex }, 
-            { description: regex }, 
-            { location: regex }
-        ],
-      })
-        .limit(30)
-        .populate("category")
-  
-      res.status(200).json(hotels)
-    } catch (error) {
-      console.error("Search error:", error)
-      res.status(500).json({ message: "Server error during search" })
-    }
-  }
+        const { q } = req.query
 
-  const getHotelsByCategory = async (req, res, next) => {
-    try {
-      const categoryName = req.params.categoryName
-  
-      const category = await Category.findOne({ name: categoryName })
-  
-      if (!category) {
-        return res.status(404).json({ message: "Category not found" })
-      }
-  
-      const hotels = await Hotel.find({ category: category._id }).populate(
-        "category"
-      )
-  
-      res.json(hotels)
-    } catch (err) {
-      console.error(err)
-      res.status(500).json({ message: "Server error" })
+        if (!q || q.trim() === "") {
+            return res.status(400).json({ message: 'Query parameter "q" is required' })
+        }
+
+        const regex = new RegExp(q, "i")
+
+        const hotels = await Hotel.find({
+            $or: [
+                { name: regex },
+                { description: regex },
+                { location: regex }
+            ],
+        })
+            .limit(30)
+            .populate("category")
+
+        res.status(200).json(hotels)
+    } catch (error) {
+        console.error("Search error:", error)
+        res.status(500).json({ message: "Server error during search" })
     }
-  }
+}
+
+/**
+ * Grąžina viešbučius pagal kategorijos pavadinimą
+ */
+const getHotelsByCategory = async (req, res, next) => {
+    try {
+        const categoryName = req.params.categoryName
+
+        const category = await Category.findOne({ name: categoryName })
+
+        if (!category) {
+            return res.status(404).json({ message: "Category not found" })
+        }
+
+        const hotels = await Hotel.find({ category: category._id }).populate("category")
+
+        res.json(hotels)
+    } catch (err) {
+        console.error(err)
+        res.status(500).json({ message: "Server error" })
+    }
+}
 
 module.exports = {
     createHotel,
