@@ -33,6 +33,8 @@ const register = async (req, res) => {
         email: newUser.email,
         id: newUser._id,
       },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
      
     )
 
@@ -45,6 +47,7 @@ const register = async (req, res) => {
         email: newUser.email,
         role: newUser.role,
       },
+
     })
   } catch (error) {
     console.error("REGISTRATION ERROR:", error)
@@ -77,6 +80,8 @@ const login = async (req, res) => {
         id: user._id,
         role: user.role,
       },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
       
     )
 
