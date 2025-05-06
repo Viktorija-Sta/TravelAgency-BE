@@ -4,10 +4,10 @@ const Hotel = require('../models/hotelModel')
 const Category = require('../models/categoryModel')
 const Review = require('../models/reviewModel')
 
-// CREATE
 const createAgency = async (req, res) => {
     try {
         const agency = new Agency(req.body)
+
         await agency.save()
         res.status(201).json({ message: 'Agency created successfully', data: agency })
     } catch (error) {
@@ -15,17 +15,16 @@ const createAgency = async (req, res) => {
     }
 }
 
-// GET ALL
 const getAllAgencies = async (req, res) => {
     try {
         const agencies = await Agency.find()
+
         res.status(200).json(agencies)
     } catch (error) {
         res.status(500).json({ message: 'Failed to fetch agencies', error })
     }
 }
 
-// GET BY ID + RELATIONS
 const getAgencyById = async (req, res) => {
   try {
     const { id } = req.params
@@ -54,7 +53,6 @@ const getAgencyById = async (req, res) => {
 }
 
 
-// UPDATE
 const updateAgency = async (req, res) => {
     try {
         const { id } = req.params
@@ -70,7 +68,6 @@ const updateAgency = async (req, res) => {
     }
 }
 
-// DELETE
 const deleteAgency = async (req, res) => {
     try {
         const { id } = req.params

@@ -6,18 +6,18 @@ const { ALLOWED_ORDER_STATUSES } = require("../constants/orderStatus")
 const createOrder = async (req, res) => {
     try {
       if (!req.user) {
-        return res.status(401).send({ message: "Access denied. Please login" });
+        return res.status(401).send({ message: "Access denied. Please login" })
       }
   
-      const userId = req.user._id;
-      const { items, totalAmount, shippingAddress } = req.body;
+      const userId = req.user._id
+      const { items, totalAmount, shippingAddress } = req.body
   
       if (!items || !Array.isArray(items) || items.length === 0) {
-        return res.status(400).send({ message: "Užsakymo prekės yra privalomos" });
+        return res.status(400).send({ message: "Užsakymo prekės yra privalomos" })
       }
   
       if (!shippingAddress || !totalAmount) {
-        return res.status(400).send({ message: "Trūksta būtinos informacijos" });
+        return res.status(400).send({ message: "Trūksta būtinos informacijos" })
       }
   
       const newOrder = new Order({
@@ -27,16 +27,16 @@ const createOrder = async (req, res) => {
         shippingAddress,
         orderDate: new Date(),
         status: "pending"
-      });
+      })
   
-      await newOrder.save();
+      await newOrder.save()
   
-      res.status(201).json({ message: "Užsakymas sėkmingai pateiktas", order: newOrder });
+      res.status(201).json({ message: "Užsakymas sėkmingai pateiktas", order: newOrder })
     } catch (err) {
-      console.error("Klaida sukuriant užsakymą:", err);
-      res.status(500).send({ message: "Įvyko klaida", error: err });
+      console.error("Klaida sukuriant užsakymą:", err)
+      res.status(500).send({ message: "Įvyko klaida", error: err })
     }
-  };
+  }
   
 
 const getOrderById = async (req, res) => {
@@ -110,31 +110,31 @@ const getAllOrders = async (req, res) => {
 
 const updateOrderStatus = async (req, res) => {
     try {
-        const { orderId } = req.params;
-        const { status } = req.body;
+        const { orderId } = req.params
+        const { status } = req.body
     
         if (status && !ALLOWED_ORDER_STATUSES.includes(status)) {
-          return res.status(400).send({ error: "Invalid order status" });
+          return res.status(400).send({ error: "Invalid order status" })
         }
     
         if (req.user.role !== "admin") {
-          return res.status(403).send({ message: "Only ADMIN can update orders" });
+          return res.status(403).send({ message: "Only ADMIN can update orders" })
         }
     
         const updatedOrder = await Order.findByIdAndUpdate(
           orderId,
           { $set: { status } },
           { new: true }
-        );
+        )
     
         if (!updatedOrder) {
-          return res.status(404).send({ message: "Order not found" });
+          return res.status(404).send({ message: "Order not found" })
         }
     
-        res.status(200).send(updatedOrder);
+        res.status(200).send(updatedOrder)
       } catch (error) {
-        console.error('Klaida atnaujinant užsakymo statusą:', error);
-        res.status(500).send({ message: "Server error updating order status" });
+        console.error('Klaida atnaujinant užsakymo statusą:', error)
+        res.status(500).send({ message: "Server error updating order status" })
       }
     }
 const deleteOrder = async (req, res) => {
@@ -204,7 +204,7 @@ const checkout = async (req, res) => {
 
         let calculatedTotal = 0
         items.forEach((item) => {
-            calculatedTotal += item.price * item.quantity;
+            calculatedTotal += item.price * item.quantity
         })
         
 

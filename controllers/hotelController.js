@@ -1,10 +1,9 @@
-const Agency = require('../models/agencyModel');
-const Category = require('../models/categoryModel');
-const Destination = require('../models/destinationModel');
-const Hotel = require('../models/hotelModel');
-const Review = require('../models/reviewModel');
+const Agency = require('../models/agencyModel')
+const Category = require('../models/categoryModel')
+const Destination = require('../models/destinationModel')
+const Hotel = require('../models/hotelModel')
+const Review = require('../models/reviewModel')
 
-// CREATE
 const createHotel = async (req, res) => {
     try {
         const hotel = new Hotel(req.body)
@@ -16,7 +15,6 @@ const createHotel = async (req, res) => {
     }
 }
 
-// GET ALL HOTELS
 const getAllHotels = async (req, res) => {
     try {
       const filter = {}
@@ -44,7 +42,6 @@ const getAllHotels = async (req, res) => {
     }
   }
 
-// GET SINGLE HOTEL
 const getHotelById = async (req, res) => {
     try {
         const { id } = req.params
@@ -70,7 +67,6 @@ const getHotelById = async (req, res) => {
     }
 }
 
-// UPDATE HOTEL
 const updateHotel = async (req, res) => {
     try {
         const { id } = req.params
@@ -85,12 +81,11 @@ const updateHotel = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'Failed to update hotel', error })
     }
-};
+}
 
-// DELETE HOTEL
 const deleteHotel = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { id } = req.params
         const deletedHotel = await Hotel.findByIdAndDelete(id)
         if (!deletedHotel) {
             return res.status(404).json({ message: 'Hotel not found' })
@@ -103,7 +98,7 @@ const deleteHotel = async (req, res) => {
 
 const searchHotels= async (req, res) => {
     try {
-      const { q } = req.query;
+      const { q } = req.query
   
       if (!q || q.trim() === "") {
         return res

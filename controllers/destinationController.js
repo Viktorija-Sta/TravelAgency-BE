@@ -4,7 +4,6 @@ const Agency = require('../models/agencyModel')
 const Category = require('../models/categoryModel')
 const Review = require('../models/reviewModel')
 
-// CREATE
 const createDestination = async (req, res) => {
     try {
         const destination = new Destination(req.body)
@@ -16,7 +15,6 @@ const createDestination = async (req, res) => {
     }
 }
 
-// GET ALL
 const getAllDestinations = async (req, res) => {
     try {
         const filter = {}
@@ -37,7 +35,6 @@ const getAllDestinations = async (req, res) => {
     }
 }
 
-// GET BY ID with related hotels, agency, category
 const getDestinationById = async (req, res) => {
     try {
       const { id } = req.params
@@ -67,7 +64,6 @@ const getDestinationById = async (req, res) => {
     }
   }
 
-// UPDATE
 const updateDestination = async (req, res) => {
     try {
         const { id } = req.params
@@ -81,7 +77,6 @@ const updateDestination = async (req, res) => {
     }
 }
 
-// DELETE
 const deleteDestination = async (req, res) => {
     try {
         const { id } = req.params

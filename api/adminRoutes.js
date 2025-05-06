@@ -1,11 +1,11 @@
-const express = require('express');
-const router = express.Router();
+const express = require('express')
+const router = express.Router()
 
-const rolesMiddlewares = require("../middlewares/rolesMiddlewares");
-const ROLES = require("../config/roles");
+const rolesMiddlewares = require("../middlewares/rolesMiddlewares")
+const ROLES = require("../config/roles")
 
-const authMiddleware = require('../middlewares/authMiddleware');
-const { getStats, getAllOrders, updateOrder } = require('../controllers/adminController');
+const authMiddleware = require('../middlewares/authMiddleware')
+const { getStats, getAllOrders, updateOrder } = require('../controllers/adminController')
 
 router.get('/metrics', authMiddleware, rolesMiddlewares(ROLES.ADMIN), getStats)
 router.put('/orders/:orderId', authMiddleware, rolesMiddlewares(ROLES.ADMIN), updateOrder)

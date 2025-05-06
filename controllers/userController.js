@@ -1,31 +1,31 @@
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
-const User = require("../models/userModel");
-const process = require("process");
-const Order = require("../models/orderModel");
+const jwt = require("jsonwebtoken")
+const bcrypt = require("bcryptjs")
+const User = require("../models/userModel")
+const process = require("process")
+const Order = require("../models/orderModel")
 
 const register = async (req, res) => {
-  const { username, email, password } = req.body;
+  const { username, email, password } = req.body
 
   if (!username || !email || !password) {
-    return res.status(400).send({ message: "All fields are required" });
+    return res.status(400).send({ message: "All fields are required" })
   }
 
-  const existingUser = await User.findOne({ email });
+  const existingUser = await User.findOne({ email })
 
   if (existingUser) {
-    return res.status(400).send({ message: "Email already exists" });
+    return res.status(400).send({ message: "Email already exists" })
   }
 
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10)
 
     const newUser = new User({
       username,
       email,
       password: hashedPassword,
-    });
-    await newUser.save();
+    })
+    await newUser.save()
 
     const token = jwt.sign(
       {
@@ -33,9 +33,8 @@ const register = async (req, res) => {
         email: newUser.email,
         id: newUser._id,
       },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
+     
+    )
 
     res.send({
       message: "User registered successfully.",
@@ -46,30 +45,30 @@ const register = async (req, res) => {
         email: newUser.email,
         role: newUser.role,
       },
-    });
+    })
   } catch (error) {
     console.error("REGISTRATION ERROR:", error)
-    res.status(500).send(error);
+    res.status(500).send(error)
   }
-};
+}
 
 const login = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password } = req.body
 
   if (!email || !password) {
-    return res.status(400).send({ message: "Invalid email or password" });
+    return res.status(400).send({ message: "Invalid email or password" })
   }
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email })
     if (!user) {
-      return res.status(400).send({ message: "Invalid email or password" });
+      return res.status(400).send({ message: "Invalid email or password" })
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(password, user.password)
 
     if (!isMatch) {
-      return res.status(400).send({ message: "Invalid email or password" });
+      return res.status(400).send({ message: "Invalid email or password" })
     }
     const token = jwt.sign(
       {
@@ -78,59 +77,58 @@ const login = async (req, res) => {
         id: user._id,
         role: user.role,
       },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
+      
+    )
 
-    res.send({ message: "User Successfully Logged In", token });
+    res.send({ message: "User Successfully Logged In", token })
   } catch (error) {
-    res.status(500).send(error);
+    res.status(500).send(error)
   }
-};
+}
 
 const getUsers = async (req, res) => {
   try {
-    const users = await User.find();
-    res.send(users);
+    const users = await User.find()
+    res.send(users)
   } catch (error) {
-    res.status(500).send(error);
+    res.status(500).send(error)
   }
-};
+}
 
 const deleteUser = async (req, res) => {
   try {
-    const { id } = req.params;
-    const currentUserId = req.user.id;
+    const { id } = req.params
+    const currentUserId = req.user.id
 
     if (id === currentUserId) {
-      return res.status(403).send({ error: "You cannot delete yourself" });
+      return res.status(403).send({ error: "You cannot delete yourself" })
     }
 
-    const deletedUser = await User.findByIdAndDelete(id);
+    const deletedUser = await User.findByIdAndDelete(id)
 
     if (!deletedUser) {
-      return res.status(404).send({ error: "User not found" });
+      return res.status(404).send({ error: "User not found" })
     }
 
-    res.send({ message: "User was deleted", data: deletedUser });
+    res.send({ message: "User was deleted", data: deletedUser })
   } catch (error) {
-    res.status(500).send(error);
+    res.status(500).send(error)
   }
-};
+}
 
 const getMyOrders = async (req, res) => {
   try {
-    const userId = req.user._id;
+    const userId = req.user._id
 
     const orders = await Order.find({ user: userId })
-      .populate("items.productId", "title price image");
+      .populate("items.productId", "title price image")
 
-    res.status(200).json(orders);
+    res.status(200).json(orders)
   } catch (error) {
-    console.error("Error while retrieving user orders:", error);
-    res.status(500).json({ message: "Failed to retrieve orders", error });
+    console.error("Error while retrieving user orders:", error)
+    res.status(500).json({ message: "Failed to retrieve orders", error })
   }
-};
+}
 
 const getCurrentUser = async (req, res) => {
     try {
@@ -171,4 +169,4 @@ module.exports = {
     getMyOrders,
     getCurrentUser,
     updateUser
-};
+}

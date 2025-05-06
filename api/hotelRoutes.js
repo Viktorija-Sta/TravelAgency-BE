@@ -1,9 +1,9 @@
-const express = require("express");
-const { getAllHotels, getHotelsByCategory, getHotelById, createHotel, updateHotel, deleteHotel, searchHotels } = require("../controllers/hotelController");
-const authMiddleware = require("../middlewares/authMiddleware");
-const rolesMiddlewares = require("../middlewares/rolesMiddlewares");
-const ROLES = require("../config/roles");
-const router = express.Router();
+const express = require("express")
+const { getAllHotels, getHotelsByCategory, getHotelById, createHotel, updateHotel, deleteHotel, searchHotels } = require("../controllers/hotelController")
+const authMiddleware = require("../middlewares/authMiddleware")
+const rolesMiddlewares = require("../middlewares/rolesMiddlewares")
+const ROLES = require("../config/roles")
+const router = express.Router()
 
 
 router.get('/search', searchHotels)

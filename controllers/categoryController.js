@@ -6,6 +6,7 @@ const Hotel = require('../models/hotelModel')
 const createCategory = async (req, res) => {
     try {
         const category = new Category(req.body)
+        
         await category.save()
         res.send(category)
     } catch (error) {

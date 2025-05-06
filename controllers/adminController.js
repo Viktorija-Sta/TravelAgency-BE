@@ -32,73 +32,73 @@ const getStats = async (req, res) => {
 const getAllOrders = async (req, res) => {
   try {
     if (req.user.role !== "admin") {
-      return res.status(403).send({ message: "Only ADMIN can see all orders" });
+      return res.status(403).send({ message: "Only ADMIN can see all orders" })
     }
 
     const orders = await Order.find()
       .populate("user", "email username")
-      .lean();
+      .lean()
 
     const enrichedOrders = await Promise.all(
       orders.map(async (order) => {
         const enrichedItems = await Promise.all(
           order.items.map(async (item) => {
-            let productDetails = null;
+            let productDetails = null
 
             if (item.modelType === "Hotel") {
-              productDetails = await Hotel.findById(item.productId).select("name pricePerNight image");
+              productDetails = await Hotel.findById(item.productId).select("name pricePerNight image")
             } else if (item.modelType === "Destination") {
-              productDetails = await Destination.findById(item.productId).select("name price imageUrl");
+              productDetails = await Destination.findById(item.productId).select("name price imageUrl")
             }
 
             return {
               ...item,
               details: productDetails,
-            };
+            }
           })
-        );
+        )
 
         return {
           ...order,
           items: enrichedItems,
-        };
+        }
       })
-    );
+    )
 
-    res.send(enrichedOrders);
+    res.send(enrichedOrders)
   } catch (error) {
-    console.error("Klaida gaunant užsakymus:", error);
-    res.status(500).send({ message: "Server error", error });
+    console.error("Klaida gaunant užsakymus:", error)
+    res.status(500).send({ message: "Server error", error })
   }
-};
+}
 
 const updateOrder = async (req, res) => {
   try {
-    const { orderId } = req.params;
-    const { status } = req.body;
+    const { orderId } = req.params
+    const { status } = req.body
 
     if (status && !ALLOWED_ORDER_STATUSES.includes(status)) {
-      return res.status(400).send({ error: "Invalid order status" });
+      return res.status(400).send({ error: "Invalid order status" })
     }
 
     if (req.user.role !== "admin") {
-      return res.status(403).send({ message: "Only ADMIN can update orders" });
+      return res.status(403).send({ message: "Only ADMIN can update orders" })
     }
 
     const updatedOrder = await Order.findByIdAndUpdate(
       orderId,
       { $set: { status } },
       { new: true }
-    );
+    )
 
     if (!updatedOrder) {
-      return res.status(404).send({ message: "Order not found" });
+      return res.status(404).send({ message: "Order not found" })
     }
 
-    res.status(200).send(updatedOrder);
+    res.status(200).send(updatedOrder)
   } catch (error) {
-    console.error('Klaida atnaujinant užsakymo statusą:', error);
-    res.status(500).send({ message: "Server error updating order status" });
+    console.error('Klaida atnaujinant užsakymo statusą:', error)
+    res.status(500).send({ message: "Server error updating order status" })
   }
 }
 
