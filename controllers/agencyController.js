@@ -4,27 +4,35 @@ const Hotel = require('../models/hotelModel')
 const Category = require('../models/categoryModel')
 const Review = require('../models/reviewModel')
 
+/**
+ * Sukuria naują agentūrą
+ */
 const createAgency = async (req, res) => {
     try {
         const agency = new Agency(req.body)
-
         await agency.save()
+
         res.status(201).json({ message: 'Agency created successfully', data: agency })
     } catch (error) {
         res.status(500).json({ message: 'Failed to create agency', error })
     }
 }
 
+/**
+ * Grąžina visas agentūras
+ */
 const getAllAgencies = async (req, res) => {
     try {
         const agencies = await Agency.find()
-
         res.status(200).json(agencies)
     } catch (error) {
         res.status(500).json({ message: 'Failed to fetch agencies', error })
     }
 }
 
+/**
+ * Grąžina agentūrą pagal ID ir susijusius duomenis (keliones, viešbučius, kategorijas, atsiliepimus)
+ */
 const getAgencyById = async (req, res) => {
   try {
     const { id } = req.params
@@ -37,7 +45,6 @@ const getAgencyById = async (req, res) => {
     const destinations = await Destination.find({ agency: id })
     const hotels = await Hotel.find({ agency: id })
     const categories = await Category.find({ agency: id })
-    
     const reviews = await Review.find({ agency: id }).populate('user', 'username')
 
     res.status(200).json({
@@ -52,7 +59,9 @@ const getAgencyById = async (req, res) => {
   }
 }
 
-
+/**
+ * Atnaujina esamą agentūrą pagal ID
+ */
 const updateAgency = async (req, res) => {
     try {
         const { id } = req.params
@@ -68,6 +77,9 @@ const updateAgency = async (req, res) => {
     }
 }
 
+/**
+ * Ištrina agentūrą pagal ID
+ */
 const deleteAgency = async (req, res) => {
     try {
         const { id } = req.params
@@ -83,51 +95,52 @@ const deleteAgency = async (req, res) => {
     }
 }
 
-const searchAgencies= async (req, res) => {
+/**
+ * Ieško agentūrų pagal užklausos tekstą (name arba description)
+ */
+const searchAgencies = async (req, res) => {
     try {
-      const { q } = req.query
-  
-      if (!q || q.trim() === "") {
-        return res
-          .status(400)
-          .json({ message: 'Query parameter "q" is required' })
-      }
-  
-      const regex = new RegExp(q, "i")
-  
-      const agencies = await Agency.find({
-        $or: [{ name: regex }, { description: regex }],
-      })
+        const { q } = req.query
+
+        if (!q || q.trim() === "") {
+            return res.status(400).json({ message: 'Query parameter "q" is required' })
+        }
+
+        const regex = new RegExp(q, "i")
+
+        const agencies = await Agency.find({
+            $or: [{ name: regex }, { description: regex }]
+        })
         .limit(30)
         .populate("category")
-  
-      res.status(200).json(agencies)
-    } catch (error) {
-      console.error("Search error:", error)
-      res.status(500).json({ message: "Server error during search" })
-    }
-  }
 
-  const getAgenciesByCategory = async (req, res, next) => {
-    try {
-      const categoryName = req.params.categoryName
-  
-      const category = await Category.findOne({ name: categoryName })
-  
-      if (!category) {
-        return res.status(404).json({ message: "Category not found" })
-      }
-  
-      const agencies = await Agency.find({ category: category._id }).populate(
-        "category"
-      )
-  
-      res.json(agencies)
-    } catch (err) {
-      console.error(err)
-      res.status(500).json({ message: "Server error" })
+        res.status(200).json(agencies)
+    } catch (error) {
+        console.error("Search error:", error)
+        res.status(500).json({ message: "Server error during search" })
     }
-  }
+}
+
+/**
+ * Grąžina visas agentūras, kurios priklauso tam tikrai kategorijai
+ */
+const getAgenciesByCategory = async (req, res) => {
+    try {
+        const categoryName = req.params.categoryName
+
+        const category = await Category.findOne({ name: categoryName })
+        if (!category) {
+            return res.status(404).json({ message: "Category not found" })
+        }
+
+        const agencies = await Agency.find({ category: category._id }).populate("category")
+
+        res.json(agencies)
+    } catch (err) {
+        console.error(err)
+        res.status(500).json({ message: "Server error" })
+    }
+}
 
 module.exports = {
     createAgency,

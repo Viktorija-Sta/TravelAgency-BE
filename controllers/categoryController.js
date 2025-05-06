@@ -3,10 +3,12 @@ const Category = require('../models/categoryModel')
 const Destination = require('../models/destinationModel')
 const Hotel = require('../models/hotelModel')
 
+/**
+ * Sukuria naują kategoriją pagal pateiktus duomenis
+ */
 const createCategory = async (req, res) => {
     try {
         const category = new Category(req.body)
-        
         await category.save()
         res.send(category)
     } catch (error) {
@@ -14,6 +16,9 @@ const createCategory = async (req, res) => {
     }
 }
 
+/**
+ * Grąžina visas kategorijas
+ */
 const getCategories = async (req, res) => {
     try {
         const categories = await Category.find()
@@ -23,6 +28,9 @@ const getCategories = async (req, res) => {
     }
 }
 
+/**
+ * Grąžina vieną kategoriją pagal ID
+ */
 const getCategoryById = async (req, res) => {
     try {
         const { id } = req.params
@@ -38,6 +46,9 @@ const getCategoryById = async (req, res) => {
     }
 }
 
+/**
+ * Atnaujina kategorijos duomenis pagal ID
+ */
 const updateCategory = async (req, res) => {
     try {
         const { id } = req.params
@@ -58,6 +69,9 @@ const updateCategory = async (req, res) => {
     }
 }
 
+/**
+ * Ištrina kategoriją pagal ID
+ */
 const deleteCategory = async (req, res) => {
     try {
         const { id } = req.params
@@ -68,12 +82,17 @@ const deleteCategory = async (req, res) => {
             return res.status(404).send({ error: 'Category Not found' })
         }
         
-        res.send({ message: 'Category was removed', data: deletedCategory})
+        res.send({ message: 'Category was removed', data: deletedCategory })
     } catch (error) {
         res.status(500).send(error)
     }
 }
 
+/**
+ * Grąžina visą informaciją apie kategoriją:
+ * - pačią kategoriją
+ * - su ja susijusius viešbučius, keliones ir agentūras
+ */
 const getCategoryDetails = async (req, res) => {
     try {
         const { id } = req.params
