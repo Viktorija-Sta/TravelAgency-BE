@@ -4,6 +4,9 @@ const Agency = require('../models/agencyModel')
 const Category = require('../models/categoryModel')
 const Review = require('../models/reviewModel')
 
+/**
+ * Sukuria naują kelionės įrašą (destination)
+ */
 const createDestination = async (req, res) => {
     try {
         const destination = new Destination(req.body)
@@ -15,9 +18,13 @@ const createDestination = async (req, res) => {
     }
 }
 
+/**
+ * Grąžina visas keliones, galima filtruoti pagal agentūrą ir kategoriją (query params: ?agency=...&category=...)
+ */
 const getAllDestinations = async (req, res) => {
     try {
         const filter = {}
+
         if (req.query.agency) {
             filter.agency = req.query.agency
         }
@@ -29,67 +36,86 @@ const getAllDestinations = async (req, res) => {
         const destinations = await Destination.find(filter)
             .populate('agency', 'name location')
             .populate('category', 'name')
+
         res.json(destinations)
     } catch (error) {
         res.status(500).json({ message: 'Failed to fetch destinations', error })
     }
 }
 
+/**
+ * Grąžina konkrečią kelionę pagal ID su susietais duomenimis (agentūra, kategorija, viešbučiai, atsiliepimai)
+ */
 const getDestinationById = async (req, res) => {
     try {
-      const { id } = req.params
-  
-      const destination = await Destination.findById(id)
-        .populate('agency', 'name location contactInfo')
-        .populate('category', 'name')
-        .populate({
-          path: 'hotels',
-          model: 'Hotel',
-          populate: ['agency', 'category'] 
-        })
-  
-      if (!destination) {
-        return res.status(404).json({ message: 'Destination not found' })
-      }
-  
-      const reviews = await Review.find({ destination: id }).populate('user', 'username')
-  
-      res.json({
-        destination,
-        hotels: destination.hotels,
-        reviews,
-      })
-    } catch (error) {
-      res.status(500).json({ message: 'Failed to fetch destination', error })
-    }
-  }
+        const { id } = req.params
 
+        const destination = await Destination.findById(id)
+            .populate('agency', 'name location contactInfo')
+            .populate('category', 'name')
+            .populate({
+                path: 'hotels',
+                model: 'Hotel',
+                populate: ['agency', 'category']
+            })
+
+        if (!destination) {
+            return res.status(404).json({ message: 'Destination not found' })
+        }
+
+        const reviews = await Review.find({ destination: id }).populate('user', 'username')
+
+        res.json({
+            destination,
+            hotels: destination.hotels,
+            reviews,
+        })
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to fetch destination', error })
+    }
+}
+
+/**
+ * Atnaujina kelionės informaciją pagal ID
+ */
 const updateDestination = async (req, res) => {
     try {
         const { id } = req.params
+
         const updatedDestination = await Destination.findByIdAndUpdate(id, req.body, { new: true })
+
         if (!updatedDestination) {
             return res.status(404).json({ message: 'Destination not found' })
         }
+
         res.json(updatedDestination)
     } catch (error) {
         res.status(500).json({ message: 'Failed to update destination', error })
     }
 }
 
+/**
+ * Ištrina kelionę pagal ID
+ */
 const deleteDestination = async (req, res) => {
     try {
         const { id } = req.params
+
         const deleted = await Destination.findByIdAndDelete(id)
+
         if (!deleted) {
             return res.status(404).json({ message: 'Destination not found' })
         }
+
         res.json({ message: 'Destination deleted successfully' })
     } catch (error) {
         res.status(500).json({ message: 'Failed to delete destination', error })
     }
 }
 
+/**
+ * Ieško kelionių pagal pavadinimą, vietą arba aprašymą
+ */
 const searchDestinations = async (req, res) => {
     try {
         const { q } = req.query
@@ -117,6 +143,9 @@ const searchDestinations = async (req, res) => {
     }
 }
 
+/**
+ * Grąžina keliones pagal kategorijos pavadinimą
+ */
 const getDestinationsByCategory = async (req, res, next) => {
     try {
         const categoryName = req.params.categoryName
