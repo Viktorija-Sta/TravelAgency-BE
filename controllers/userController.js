@@ -4,40 +4,39 @@ const User = require("../models/userModel")
 const process = require("process")
 const Order = require("../models/orderModel")
 
+/**
+ * Registruoja naują vartotoją, užkoduoja slaptažodį, sukuria JWT tokeną ir grąžina vartotojo duomenis
+ */
 const register = async (req, res) => {
   const { username, email, password } = req.body
 
+  // Patikrinama ar pateikti visi laukai
   if (!username || !email || !password) {
     return res.status(400).send({ message: "All fields are required" })
   }
 
+  // Patikrinama ar toks el. paštas jau egzistuoja
   const existingUser = await User.findOne({ email })
-
   if (existingUser) {
     return res.status(400).send({ message: "Email already exists" })
   }
 
   try {
+    // Užkoduojamas slaptažodis
     const hashedPassword = await bcrypt.hash(password, 10)
 
-    const newUser = new User({
-      username,
-      email,
-      password: hashedPassword,
-    })
+    // Sukuriamas ir išsaugomas naujas vartotojas
+    const newUser = new User({ username, email, password: hashedPassword })
     await newUser.save()
 
+    // Sukuriamas JWT tokenas
     const token = jwt.sign(
-      {
-        username: newUser.username,
-        email: newUser.email,
-        id: newUser._id,
-      },
+      { username: newUser.username, email: newUser.email, id: newUser._id },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
-     
     )
 
+    // Grąžinamas atsakas
     res.send({
       message: "User registered successfully.",
       token,
@@ -47,7 +46,6 @@ const register = async (req, res) => {
         email: newUser.email,
         role: newUser.role,
       },
-
     })
   } catch (error) {
     console.error("REGISTRATION ERROR:", error)
@@ -55,6 +53,9 @@ const register = async (req, res) => {
   }
 }
 
+/**
+ * Prisijungia vartotoją, patikrina slaptažodį, sukuria ir grąžina JWT tokeną
+ */
 const login = async (req, res) => {
   const { email, password } = req.body
 
@@ -64,25 +65,15 @@ const login = async (req, res) => {
 
   try {
     const user = await User.findOne({ email })
-    if (!user) {
-      return res.status(400).send({ message: "Invalid email or password" })
-    }
+    if (!user) return res.status(400).send({ message: "Invalid email or password" })
 
     const isMatch = await bcrypt.compare(password, user.password)
+    if (!isMatch) return res.status(400).send({ message: "Invalid email or password" })
 
-    if (!isMatch) {
-      return res.status(400).send({ message: "Invalid email or password" })
-    }
     const token = jwt.sign(
-      {
-        username: user.username,
-        email: user.email,
-        id: user._id,
-        role: user.role,
-      },
+      { username: user.username, email: user.email, id: user._id, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
-      
     )
 
     res.send({ message: "User Successfully Logged In", token })
@@ -91,6 +82,9 @@ const login = async (req, res) => {
   }
 }
 
+/**
+ * Grąžina visus vartotojus (naudojama administratoriui)
+ */
 const getUsers = async (req, res) => {
   try {
     const users = await User.find()
@@ -100,6 +94,9 @@ const getUsers = async (req, res) => {
   }
 }
 
+/**
+ * Ištrina vartotoją pagal ID (neleidžia ištrinti paties savęs)
+ */
 const deleteUser = async (req, res) => {
   try {
     const { id } = req.params
@@ -110,7 +107,6 @@ const deleteUser = async (req, res) => {
     }
 
     const deletedUser = await User.findByIdAndDelete(id)
-
     if (!deletedUser) {
       return res.status(404).send({ error: "User not found" })
     }
@@ -121,6 +117,9 @@ const deleteUser = async (req, res) => {
   }
 }
 
+/**
+ * Grąžina prisijungusio vartotojo užsakymus
+ */
 const getMyOrders = async (req, res) => {
   try {
     const userId = req.user._id
@@ -135,43 +134,49 @@ const getMyOrders = async (req, res) => {
   }
 }
 
+/**
+ * Grąžina šiuo metu prisijungusio vartotojo duomenis be slaptažodžio
+ */
 const getCurrentUser = async (req, res) => {
-    try {
-      const user = await User.findById(req.user.id).select("-password")
-      if (!user) {
-        return res.status(404).json({ message: "User not found" })
-      }
-      res.status(200).json(user)
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch user", error })
+  try {
+    const user = await User.findById(req.user.id).select("-password")
+    if (!user) {
+      return res.status(404).json({ message: "User not found" })
     }
+    res.status(200).json(user)
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch user", error })
   }
+}
 
-  const updateUser = async (req, res) => {
-    try {
-        const { id } = req.params
-        const { username, email, phoneNumber, address } = req.body
+/**
+ * Atnaujina vartotojo duomenis (vardas, el. paštas, telefonas, adresas)
+ */
+const updateUser = async (req, res) => {
+  try {
+    const { id } = req.params
+    const { username, email, phoneNumber, address } = req.body
 
-        const updateData = { username, email, phoneNumber, address }
+    const updateData = { username, email, phoneNumber, address }
 
-        const updatedUser = await User.findByIdAndUpdate(id, updateData, { new: true }).select('-password')
+    const updatedUser = await User.findByIdAndUpdate(id, updateData, { new: true }).select('-password')
 
-        if (!updatedUser) {
-            return res.status(404).send({ message: "User not found" })
-        }
-
-        res.send({ message: "User updated successfully", data: updatedUser })
-    } catch (err) {
-        res.status(500).send(err)
+    if (!updatedUser) {
+      return res.status(404).send({ message: "User not found" })
     }
+
+    res.send({ message: "User updated successfully", data: updatedUser })
+  } catch (err) {
+    res.status(500).send(err)
+  }
 }
 
 module.exports = {
-    register,
-    login,
-    getUsers,
-    deleteUser,
-    getMyOrders,
-    getCurrentUser,
-    updateUser
+  register,
+  login,
+  getUsers,
+  deleteUser,
+  getMyOrders,
+  getCurrentUser,
+  updateUser
 }
