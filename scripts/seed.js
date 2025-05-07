@@ -118,11 +118,11 @@ const seedData = async () => {
     console.log('📦 Kuriamos kelionės (destinations)...')
     const destinations = await Destination.insertMany([
       {
-        name: 'Bali',
+        name: 'Denpasar',
         description: 'Egzotiška sala su balto smėlio paplūdimiais ir nuostabiais saulėlydžiais.',
         fullDescription: 'Bali - tai Indonezijos sala, kuri garsėja savo balto smėlio paplūdimiais, nuostabiais saulėlydžiais, turkiškai mėlynais vandenimis, egzotiška gamta, kultūra ir tradicijomis. Tai viena iš populiariausių atostogų vietų pasaulyje, kurioje galima mėgautis atostogomis visiems skoniams. Balio paplūdimiuose galima mėgautis saule, jūra, bangomis, vandens sportais, masažais, spa procedūromis, egzotišku maistu',
         price: 1200,
-        location: 'Indonesia',
+        location: 'Bali',
         imageUrl: 'https://balidave.com/wp-content/uploads/2022/11/best-hotel-bali.jpeg',
         gallery: ['https://kelioniuakademija.lt/img/countries_head_pic_mobile/keliones_i_bali_2.jpg', 'https://media-cdn.tripadvisor.com/media/photo-m/1280/2a/c7/90/94/caption.jpg',"https://cdn.audleytravel.com/2478/1770/79/16027396-pura-ulun-danu-bratan-bali.jpg", "https://media.digitalnomads.world/wp-content/uploads/2021/01/20120709/bali-for-digital-nomads-1024x683.jpg", "https://lp-cms-production.imgix.net/2023-01/GettyImages-827446284.jpg?w=1095&fit=crop&crop=faces%2Cedges&auto=format&q=75"],
         category: categories[1]._id,
@@ -131,7 +131,7 @@ const seedData = async () => {
         duration: 7,
       },
       {
-        name: 'Iceland',
+        name: 'Reykjavik',
         description: 'Unikalus kraštovaizdis su ledynais ir vulkanais.',
         fullDescription: 'Iceland - tai unikalus kraštovaizdis su ledynais, vulkanais, geizeriais, karštomis versmėmis, kriokliais ir nuostabiais gamtos peizažais. Tai viena iš populiariausių kelionių vietų pasaulyje, kurioje galima mėgautis nuostabiais gamtos vaizdais, žygiais po kalnus, slidinėjimu, maudynėmis karštose versmėse ir daugybe kitų veiklų. Islandijoje taip pat galima pamatyti šiaurės pašvaistę, kuri yra viena iš gražiausių gamtos stebuklų.',
         price: 1900,

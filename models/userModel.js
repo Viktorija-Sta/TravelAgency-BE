@@ -44,7 +44,7 @@ const userSchema = new mongoose.Schema(
         },
         profilePicture: {
             type: String,
-            default: "defaultProfilePic.png" ,
+            default: "https://static.vecteezy.com/system/resources/thumbnails/020/765/399/small_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg" ,
         },
         address: {
             street: {
