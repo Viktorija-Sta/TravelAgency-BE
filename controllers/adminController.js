@@ -1,6 +1,7 @@
 const { ALLOWED_ORDER_STATUSES } = require("../constants/orderStatus")
 const Order = require("../models/orderModel")
 const Destination = require("../models/destinationModel")
+const Hotel = require("../models/hotelModel")
 
 const getStats = async (req, res) => {
   try {
