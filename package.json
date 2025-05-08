@@ -4,8 +4,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node --watch --watch-preserve-output index.js",
-    "seed": "node scripts/seed.js"
+    "index": "node --watch --watch-preserve-output index.js",
+    "seed": "node scripts/seed.js",
+    "start": "node index.js"
    
   },
   "repository": {
