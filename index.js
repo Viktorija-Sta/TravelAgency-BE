@@ -10,14 +10,15 @@ const cors = require("cors");
 
 const app = express();
 
-// CORS nustatymai
+// CORS nustatymai, leidžiantys visus Vercel subdomenus
 const allowedOrigins = [
-  "https://atsiskaitymas-fe-3tpy.vercel.app",
-  /\.vercel\.app$/
+  "https://kelioniu-agentura.vercel.app",  // Pagrindinis Vercel domenas
+  /\.vercel\.app$/  // Leidžia visus Vercel subdomenus
 ];
 
 app.use(cors({
   origin: function (origin, callback) {
+    // Jei kilmė (origin) nėra nurodyta (lokali aplinka) arba atitinka leidžiamus domenus
     if (!origin || allowedOrigins.some((allowedOrigin) => origin.match(allowedOrigin))) {
       callback(null, true);
     } else {
@@ -59,13 +60,13 @@ mongoose
 
     // Pagrindinis maršrutas
     app.get('/', (req, res) => {
-        res.send('API is running...');
+      res.send('API is running...');
     });
 
     // Serverio paleidimas
     const PORT = process.env.PORT || 3001;
     app.listen(PORT, () => {
-        console.log(`Server is running on port ${PORT}`);
+      console.log(`Server is running on port ${PORT}`);
     });
   })
   .catch((error) => {
