@@ -7,16 +7,10 @@ const globalErrorHandler = require("./controllers/errorController");
 
 const app = express();
 
-// CORS konfigūracija
-const allowedOrigins = [
-  "https://kelioniu-agentura.vercel.app",  // Pagrindinis Vercel domenas
-  /\.vercel\.app$/  // Leidžia visus Vercel subdomenus
-];
-
+// CORS nustatymai: leidžiame visus Vercel subdomenus
 app.use(cors({
   origin: function (origin, callback) {
-    // Leidžiame, jei nėra kilmės (pvz., serverio užklausos) arba kilmė atitinka sąrašą
-    if (!origin || allowedOrigins.some((allowedOrigin) => origin.match(allowedOrigin))) {
+    if (!origin || /vercel\.app$/.test(origin)) {
       callback(null, true);
     } else {
       callback(new Error("CORS policy does not allow access from this origin"));
