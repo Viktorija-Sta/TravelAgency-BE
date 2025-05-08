@@ -10,11 +10,25 @@ const cors = require("cors");
 
 const app = express();
 
-app.use(bodyParser.urlencoded({ extended: true }));
+// CORS nustatymai
+const allowedOrigins = [
+  "https://atsiskaitymas-fe-3tpy.vercel.app",
+  /\.vercel\.app$/ // Leidžia visus Vercel subdomenus
+];
+
 app.use(cors({
-  origin: process.env.CLIENT_URL,
+  origin: function (origin, callback) {
+    // Patikrina, ar kilmė (origin) yra leidžiamų sąraše arba nėra nurodyta (local dev)
+    if (!origin || allowedOrigins.some((allowedOrigin) => origin.match(allowedOrigin))) {
+      callback(null, true);
+    } else {
+      callback(new Error("CORS policy does not allow access from this origin"));
+    }
+  },
   credentials: true
 }));
+
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
 // API maršrutai
@@ -38,10 +52,12 @@ app.use('/api/orders', orderAPIRoutes);
 
 app.use(globalErrorHandler);
 
+// Pagrindinis maršrutas
 app.get('/', (req, res) => {
     res.send('API is running...');
 });
 
+// Serverio paleidimas
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
