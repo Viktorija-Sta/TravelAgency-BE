@@ -10,15 +10,15 @@ const cors = require("cors");
 
 const app = express();
 
-// CORS nustatymai
+// CORS nustatymai, leidžiantys visus Vercel subdomenus
 const allowedOrigins = [
   "https://atsiskaitymas-fe-3tpy.vercel.app",
-  /\.vercel\.app$/ // Leidžia visus Vercel subdomenus
+  /\.vercel\.app$/  // leidžia visus Vercel subdomenus
 ];
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Patikrina, ar kilmė (origin) yra leidžiamų sąraše arba nėra nurodyta (local dev)
+    // Jei kilmė (origin) nėra nurodyta (lokali aplinka) arba atitinka leidžiamus domenus
     if (!origin || allowedOrigins.some((allowedOrigin) => origin.match(allowedOrigin))) {
       callback(null, true);
     } else {
