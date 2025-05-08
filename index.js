@@ -6,12 +6,10 @@ require("./db")
 const globalErrorHandler = require("./controllers/errorController")
 
 const bodyParser = require("body-parser")
-const cors = require("cors")
 
 const app = express()
 
 app.use(bodyParser.urlencoded({ extended: true}))
-app.use(cors())
 app.use(express.json())
 
 const userAPIRoutes = require('./api/users')
@@ -45,3 +43,9 @@ const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`)
 })
+
+const cors = require('cors');
+app.use(cors({
+  origin: process.env.CLIENT_URL, 
+  credentials: true
+}));
