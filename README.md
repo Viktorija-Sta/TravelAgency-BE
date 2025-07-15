@@ -62,7 +62,7 @@ API pasiekiamas per: http://localhost:3000/api
 
 ## 🌍 Susijęs projektas
 Frontend projektas:
-🔗 TravelAgency-FE (React + Vite + TypeScript)
+🔗 [TravelAgency-FE (React + Vite + TypeScript)](https://github.com/Viktorija-Sta/TravelAgency-FE)
 
 
 ## 📝 Pastabos
