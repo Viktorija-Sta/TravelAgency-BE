@@ -33,7 +33,7 @@ CLIENT_URL=http://localhost:5173
 npm run dev
 ```
 
-API pasiekiamas per: http://localhost:3000/api
+API pasiekiamas per: http://localhost:2000/api
 
 
 ## ⚙️ Naudotos technologijos
